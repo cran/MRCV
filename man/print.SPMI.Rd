@@ -11,12 +11,12 @@ The \code{print.SPMI} method function controls the printed display of objects of
 }
 \arguments{
   \item{x}{
-An object of class \code{"SPMI"} produced by the \code{\link{SPMI.test}} function.
+An object of class \code{"SPMI"} produced by the \code{\link{MI.test}} function.
 }
   \item{...}{
 Additional arguments passed to or from other methods.
 }
 }
 \value{
-A print out of selected results from \code{\link{SPMI.test}}.
+A print out of selected results from \code{\link{MI.test}}.
 }

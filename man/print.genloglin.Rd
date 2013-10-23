@@ -24,17 +24,19 @@ An object of class \code{"genloglin"} produced by the \code{\link{genloglin}} fu
 Minimum number of digits; see \code{\link{print.default}} for additional explanation.
 }
   \item{symbolic.cor}{
-A logical value indicating whether correlations should be printed in symbolic form; see \code{\link{summary.glm}} for additional explanation.
+A logical value indicating whether correlations should be printed in symbolic form; see the \code{\link{summary}} method for class \code{"glm"} for additional explanation.
 }
   \item{signif.stars}{
-A logical value indicating whether significance stars should be printed; see \code{\link{summary.glm}} for additional explanation.
+A logical value indicating whether significance stars should be printed; see the \code{\link{summary}} method for class \code{"glm"} for additional explanation.
 }
   \item{...}{
 Additional arguments passed to or from other methods.
 }
 }
 \details{
-The \code{print.genloglin} function is based on \code{\link{print.glm}}, and the \code{print.summary.genloglin} function is based on \code{\link{print.summary.glm}}.
+The \code{print.genloglin} function is based on the \code{\link{print}} method for class \code{"glm"}.
+
+The \code{print.summary.genloglin} function is based on the \code{\link{print}} method for class \code{"summary.glm"}.
 }
 \value{
 A print out of selected results.

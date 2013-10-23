@@ -18,12 +18,12 @@ Additional arguments passed to or from other methods.
 }
 }
 \details{
-The \code{summary.genloglin} function is based on the \code{\link{summary.glm}} function with a few modifications.  The \code{coefficients} object contains Rao-Scott second-order adjusted standard errors, z-values, and p-values.  The \code{cov.unscaled} object contains the Rao-Scott second-order adjusted covariance matrix of the estimated coefficients.
+The \code{summary.genloglin} function is based on the \code{\link{summary}} method for class \code{"glm"} with a few modifications.  The \code{coefficients} object contains Rao-Scott second-order adjusted standard errors, z-values, and p-values.  The \code{cov.unscaled} object contains the Rao-Scott second-order adjusted covariance matrix of the estimated coefficients.
 
 The deviance information printed by \code{summary.genloglin} should not be used to conduct traditional model comparison tests.  The \code{\link{anova.genloglin}} function offers adjusted tests.
 }
 \value{
-The \code{summary.genloglin} function returns the same list returned by \code{\link{summary.glm}} with the exception of AIC.
+The \code{summary.genloglin} function returns the same list returned by the \code{\link{summary}} method for class \code{"glm"} with the exception of AIC.
 }
 \examples{
 ## For examples see help(genloglin).

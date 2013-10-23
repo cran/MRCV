@@ -2,7 +2,8 @@
 #                      Functions for Bilder & Loughin (2007)                        #
 #####################################################################################
 
-globalVariables(c("print.status","pb.counter","pb","weight.B.max","B","B.use"), package = "MRCV")
+globalVariables(c("print.status","pb.counter","pb","weight.B.max","B","B.use"), 
+                package = "MRCV")
 
 # data.format()
 # A function that reformats the raw data or bootstrap resample data into model form
@@ -160,33 +161,38 @@ genloglin.fit<-function(data, model, nvars, limit.output = FALSE, model.vars = N
   }
   options(warn = -1)
   if (model == "spmi") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi:W:Y + yj:W:Y, 
+    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y, 
                  data = model.data, family = poisson(link = log))
   }
   if (model == "homogeneous") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi:W:Y + yj:W:Y + wi:yj, 
+    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj, 
                  data = model.data, family = poisson(link = log)) 
   }
   if (model == "w.main") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi:W:Y + yj:W:Y + wi:yj 
-                 + wi:yj:W, data = model.data, family = poisson(link = log)) 
+    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
+                 + wi:yj%in%W, data = model.data, family = poisson(link = log)) 
   }
   if (model == "y.main") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi:W:Y + yj:W:Y + wi:yj 
-                 + wi:yj:Y, data = model.data, family = poisson(link = log)) 
+    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
+                 + wi:yj%in%Y, data = model.data, family = poisson(link = log)) 
   }
   if (model == "wy.main") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi:W:Y + yj:W:Y + wi:yj 
-                 + wi:yj:W + wi:yj:Y, data = model.data, 
+    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
+                 + wi:yj%in%W + wi:yj%in%Y, data = model.data, 
                  family = poisson(link = log)) 
   }
   if (model == "saturated") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi:W:Y + yj:W:Y + wi:yj 
-                 + wi:yj:W + wi:yj:Y + wi:yj:W:Y, 
+    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
+                 + wi:yj%in%W + wi:yj%in%Y + wi:yj%in%W:Y, 
                  data = model.data, family = poisson(link = log))  
   }  
   if (1-(is.character(model))) {
     mod.fit<-glm(formula = model, data = model.data, family = poisson(link = log)) 
+    model<-as.character(model)
+    mod.fit$formula<-paste(c(model[2], model[1], model[3]), collapse = " " )
+    mod.fit$call<-paste("glm(formula =", mod.fit$formula, ", family = poisson(link = log), data = model.data)", 
+                        collapse = " ")
+    mod.fit$formula<-as.formula(mod.fit$formula)
   }
   options(warn = 0)
   output<-mod.fit
@@ -527,9 +533,10 @@ print.genloglin<-function(x, digits = max(3, getOption("digits") - 3), ...) {
   else cat("No coefficients\n\n")
   if (nzchar(mess <- naprint(x$na.action))) 
     cat("  (", mess, ")\n", sep = "")
-    cat("Null Deviance:\t   ", format(signif(x$null.deviance, digits)), 
-        "\nResidual Deviance:", format(signif(x$deviance, digits)), "\n")
-    invisible(x)
+  cat("Null Deviance:\t   ", format(signif(x$null.deviance, digits)), 
+      "\nResidual Deviance:", format(signif(x$deviance, digits)), "\n")
+  options(scipen=0)  
+  invisible(x)
 }
 
 #####################################################################################
@@ -837,6 +844,7 @@ genloglin<-function(data, I, J, K = NULL, model, add.constant = .5, boot = TRUE,
                           MARGIN = 2, FUN = genloglin.fit, model = model, nvars = nvars,
                           limit.output = TRUE, model.vars = model.data.star[,var.cols]))
     if (print.status) {
+      setTxtProgressBar(pb, (B.max*weight.B.max+B))
       close(pb)
     }
     model.data.star<-model.data.star[,1:(B.use+2*nvars)]
@@ -944,6 +952,7 @@ summary.genloglin<-function(object, ...) {
   options(scipen=5)
   sum.fit<-object$sum.fit
   class(sum.fit)<-"summary.genloglin"
+  options(scipen=0)
   sum.fit    
 }
 
@@ -1029,8 +1038,8 @@ print.anova.genloglin<-function(x, ...) {
     model.HA<-paste(c(model.HA[2], model.HA[1], model.HA[3]), collapse=" " )
   }
   gof<-x$original.arg$gof
-  Pearson.chisq<-round(x$test.statistics$Pearson.chisq, 5)
-  lrt<-round(x$test.statistics$lrt, 5)
+  Pearson.chisq<-round(x$test.statistics$Pearson.chisq, 2)
+  lrt<-round(x$test.statistics$lrt, 2)
   if (model=="saturated") {
     chisq.p.rs<-x$rs.results$Pearson.chisq.rs$p.value
     lrt.p.rs<-x$rs.results$lrt.rs$p.value
@@ -1057,16 +1066,16 @@ print.anova.genloglin<-function(x, ...) {
     cat("Pearson chi-square statistic =", Pearson.chisq, "\n")
     cat("LRT statistic =", lrt, "\n")
     if (any(type=="rs.results")){
-      Pearson.chisq.rs<-round(x$rs.results$Pearson.chisq.rs$Pearson.chisq.rs, 5)
-      df.rs<-round(x$rs.results$Pearson.chisq.rs$df, 5)
-      chisq.p.rs<-as.name(paste("=", round(x$rs.results$Pearson.chisq.rs$p.value, 5)))
-      if (round(x$rs.results$Pearson.chisq.rs$p.value, 5)<.00001) {
-        chisq.p.rs<-as.name(paste("<", .00001))
+      Pearson.chisq.rs<-round(x$rs.results$Pearson.chisq.rs$Pearson.chisq.rs, 2)
+      df.rs<-round(x$rs.results$Pearson.chisq.rs$df, 2)
+      chisq.p.rs<-as.name(paste("=", round(x$rs.results$Pearson.chisq.rs$p.value, 4)))
+      if (round(x$rs.results$Pearson.chisq.rs$p.value, 4)<.0001) {
+        chisq.p.rs<-as.name(paste("<", .0001))
       }
-      lrt.rs<-round(x$rs.results$lrt.rs$lrt.rs, 5)
-      lrt.p.rs<-as.name(paste("=", round(x$rs.results$lrt.rs$p.value, 5)))
-      if (round(x$rs.results$lrt.rs$p.value, 5)<.00001) {
-        lrt.p.rs<-as.name(paste("<", .00001))
+      lrt.rs<-round(x$rs.results$lrt.rs$lrt.rs, 2)
+      lrt.p.rs<-as.name(paste("=", round(x$rs.results$lrt.rs$p.value, 4)))
+      if (round(x$rs.results$lrt.rs$p.value, 4)<.0001) {
+        lrt.p.rs<-as.name(paste("<", .0001))
       }
       cat("\n")
       cat("Second-Order Rao-Scott Adjusted Results:", "\n")
@@ -1075,13 +1084,13 @@ print.anova.genloglin<-function(x, ...) {
       if (any(type=="boot.results")){
         B.use<-x$boot.results$B.use
         B.discard<-x$boot.results$B.discard
-        p.chisq.boot<-as.name(paste("=", round(x$boot.results$p.chisq.boot, 5)))
+        p.chisq.boot<-as.name(paste("=", round(x$boot.results$p.chisq.boot, 4)))
         if (x$boot.results$p.chisq.boot==0) {
-          p.chisq.boot<-as.name(paste("<", round(1/B.use, 5)))
+          p.chisq.boot<-as.name(paste("<", round(1/B.use, 4)))
         }
-        p.lrt.boot<-as.name(paste("=", round(x$boot.results$p.lrt.boot, 5)))
+        p.lrt.boot<-as.name(paste("=", round(x$boot.results$p.lrt.boot, 4)))
         if (x$boot.results$p.lrt.boot==0) {
-          p.lrt.boot<-as.name(paste("<", round(1/B.use, 5)))
+          p.lrt.boot<-as.name(paste("<", round(1/B.use, 4)))
         }
         cat("\n")
         cat("Bootstrap Results:", "\n")
@@ -1098,23 +1107,23 @@ print.anova.genloglin<-function(x, ...) {
       cat("\n")
       cat("-------------------------------------------------------------------------------------")
       cat("\n", "\n")
-      Pearson.chisq.gof = round(x$test.statistics$Pearson.chisq.gof, 5)
-      lrt.gof = round(x$test.statistics$lrt.gof, 5)
+      Pearson.chisq.gof = round(x$test.statistics$Pearson.chisq.gof, 2)
+      lrt.gof = round(x$test.statistics$lrt.gof, 2)
       cat("Goodness of fit statistics for", "\n")
       cat("H0 =", model, "\n", "\n")
       cat("Pearson chi-square GOF statistic =", Pearson.chisq.gof, "\n")
       cat("LRT GOF statistic =", lrt.gof, "\n")
       if (any(type=="rs.results")){
-        Pearson.chisq.gof.rs<-(round(x$rs.results$Pearson.chisq.gof.rs$Pearson.chisq.gof.rs, 5))
-        df.rs<-round(x$rs.results$Pearson.chisq.gof.rs$df, 5)
-        chisq.gof.p.rs<-(as.name(paste("=", round(x$rs.results$Pearson.chisq.gof.rs$p.value, 5))))
-        if (round(x$rs.results$Pearson.chisq.gof.rs$p.value, 5)<.00001) {
-          chisq.gof.p.rs<-as.name(paste("<", .00001))
+        Pearson.chisq.gof.rs<-(round(x$rs.results$Pearson.chisq.gof.rs$Pearson.chisq.gof.rs, 2))
+        df.rs<-round(x$rs.results$Pearson.chisq.gof.rs$df, 2)
+        chisq.gof.p.rs<-(as.name(paste("=", round(x$rs.results$Pearson.chisq.gof.rs$p.value, 4))))
+        if (round(x$rs.results$Pearson.chisq.gof.rs$p.value, 4)<.0001) {
+          chisq.gof.p.rs<-as.name(paste("<", .0001))
         }
-        lrt.gof.rs<-round(x$rs.results$lrt.gof.rs$lrt.gof.rs, 5)
-        lrt.gof.p.rs<-as.name(paste("=", round(x$rs.results$lrt.gof.rs$p.value, 5)))
-        if (round(x$rs.results$lrt.gof.rs$p.value, 5)<.00001) {
-          lrt.gof.p.rs<-as.name(paste("<", .00001))
+        lrt.gof.rs<-round(x$rs.results$lrt.gof.rs$lrt.gof.rs, 2)
+        lrt.gof.p.rs<-as.name(paste("=", round(x$rs.results$lrt.gof.rs$p.value, 4)))
+        if (round(x$rs.results$lrt.gof.rs$p.value, 4)<.0001) {
+          lrt.gof.p.rs<-as.name(paste("<", .0001))
         }
         cat("\n")
         cat("Second-Order Rao-Scott Adjusted Results:", "\n")
@@ -1122,13 +1131,13 @@ print.anova.genloglin<-function(x, ...) {
         cat("Rao-Scott LRT GOF statistic =", paste(lrt.gof.rs, ",", sep = ""), "df =", paste(df.rs, ",", sep = ""), "p", lrt.gof.p.rs, "\n")
       }
       if (any(type=="boot.results")){
-        p.chisq.gof.boot<-as.name(paste("=", round(x$boot.results$p.chisq.gof.boot, 5)))
+        p.chisq.gof.boot<-as.name(paste("=", round(x$boot.results$p.chisq.gof.boot, 4)))
         if (x$boot.results$p.chisq.gof.boot==0) {
-          p.chisq.gof.boot<-as.name(paste("<", round(1/B.use, 5)))
+          p.chisq.gof.boot<-as.name(paste("<", round(1/B.use, 4)))
         }
-        p.lrt.gof.boot<-as.name(paste("=", round(x$boot.results$p.lrt.gof.boot, 5)))
+        p.lrt.gof.boot<-as.name(paste("=", round(x$boot.results$p.lrt.gof.boot, 4)))
         if (x$boot.results$p.lrt.gof.boot==0) {
-          p.lrt.gof.boot<-as.name(paste("<", round(1/B.use, 5)))
+          p.lrt.gof.boot<-as.name(paste("<", round(1/B.use, 4)))
         }
         cat("\n")
         cat("Bootstrap Results:", "\n")
@@ -1305,6 +1314,7 @@ anova.genloglin<-function(object, model.HA="saturated", type = "all", gof = TRUE
                          nvars = nvars, limit.output = TRUE, model.vars = 
                          model.data.star[,var.cols]))
         if (print.status) {
+          setTxtProgressBar(pb, B.use)
           close(pb)
         }
         model.data.star<-model.data.star[,1:(B.use+2*nvars)]
@@ -1726,6 +1736,7 @@ predict.genloglin<-function(object, alpha = .05, pair = "WY", print.status = TRU
                      FUN = genloglin.fit, model = model, nvars = nvars, 
                      limit.output = TRUE)
       if (print.status) {
+        setTxtProgressBar(pb, (1.7*n+n))
         close(pb)
       }
       model.data.unsorted.n_1<-model.data.unsorted.n_1[,1:(2*nvars+2)]

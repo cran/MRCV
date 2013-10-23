@@ -89,7 +89,7 @@ For the three MRCV case. See Gange (1995, p. 136) for details.  Note that \code{
 \details{
 The \code{check.margins} function is used to determine whether a bootstrap resample can be validly used by the \code{\link{genloglin}} function.  A resample is valid only if all binary items have at least one positive and one negative response.
 
-The \code{check.min} function is called by \code{\link{SPMI.test}} to compute the minimum fora Bonferroni adjustment that results in a p-value equal to the minimum of 1 and the adjusted p-value.
+The \code{check.min} function is called by \code{\link{MI.test}} to compute the minimum fora Bonferroni adjustment that results in a p-value equal to the minimum of 1 and the adjusted p-value.
 
 The \code{check.zero} function is used to add a small constant to zero cell counts.  This is necessary to prevent zero or undefined odds ratio estimates, and to ensure correct convergence of the iterative proportional fitting algorithm described in Gange (1995).
 

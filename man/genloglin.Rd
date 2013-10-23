@@ -15,7 +15,7 @@ genloglin.fit(data, model, nvars, limit.output = FALSE, model.vars = NULL)
 }
 \arguments{
   \item{data}{
-For \code{genloglin}: A data frame containing the raw data where rows correspond to the individual item response vectors, and columns correspond to the binary items, W1, \ldots, WI, Y1, \ldots, YJ, and Z1, \ldots, ZK (in this order).  The third set of items is only necessary when analyzing the relationship among three MRCVs.
+For \code{genloglin}: A data frame containing the raw data where rows correspond to the individual item response vectors, and columns correspond to the binary items, W1, \ldots, WI, Y1, \ldots, YJ, and Z1, \ldots, ZK (in this order).
 
 For \code{genloglin.fit} and observed data: For the two MRCV case, a data frame containing 2Ix2J rows and 5 columns generically named \code{W}, \code{Y}, \code{wi}, \code{yj}, and \code{count}.  For the three MRCV case, a data frame containing 2Ix2Jx2K rows and 7 columns generically named \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, \code{zk}, and \code{count}. For \code{genloglin.fit} and bootstrap data, the data frame only contains the \code{count} column.
 }
@@ -80,7 +80,7 @@ The \code{boot} argument must equal \code{TRUE} in order to obtain bootstrap res
 
 \code{mod.fit} is a list containing the same objects returned by \code{\link{glm}} with a few modifications as described in \code{\link{summary.genloglin}}.
 
-\code{sum.fit} is a list containing the same objects returned by \code{\link{summary.glm}} with a few modifications as described in \code{\link{summary.genloglin}}.
+\code{sum.fit} is a list containing the same objects returned by the \code{\link{summary}} method for class \code{"glm"} with a few modifications as described in \code{\link{summary.genloglin}}.
 
 \code{rs.results} is a list containing the following objects (see Appendix A of Bilder and Loughin, 2007, for more detail):
 \itemize{
@@ -94,7 +94,7 @@ The \code{boot} argument must equal \code{TRUE} in order to obtain bootstrap res
 \item{\code{B.use}:} {The number of bootstrap resamples used.}
 \item{\code{B.discard}:} {The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
 \item{\code{model.data.star}:} {For the two MRCV case, a numeric matrix containing 2Ix2J rows and \code{B.use}+4 columns, where the first 4 columns correspond to the model variables \code{W}, \code{Y}, \code{wi}, and \code{yj}, and the last \code{B.use} columns correspond to the observed counts for each resample.  For the three MRCV case, a numeric matrix containing 2Ix2Jx2K rows and \code{B.use+6} columns, where the first 6 columns correspond to the model variables \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, and \code{zk}, and the last \code{B.use} columns correspond to the observed counts for each resample.}
-\item{\code{mod.fit.star}:} {For the two MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2J+1 columns, where the first 2Ix2J columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.  For the three MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2Jx2K+1 columns, where the first 2Ix2Jx2K columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.}
+\item{\code{mod.fit.star}:} {For the two MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2J +1 columns, where the first 2Ix2J columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.  For the three MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2Jx2K+1 columns, where the first 2Ix2Jx2K columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.}
 \item{\code{chisq.star}:} {A numeric vector of length \code{B.use} containing the Pearson statistics (comparing \code{model} to the saturated model) calculated for each resample.}
 \item{\code{lrt.star}:} {A numeric vector of length \code{B.use} containing the LRT statistics calculated for each resample.}
 \item{\code{residual.star}:} {A numeric matrix with 2Ix2J rows (or 2Ix2Jx2K rows for the three MRCV case) and \code{B.use} columns containing the residuals calculated for each resample.}
@@ -110,7 +110,7 @@ The \code{genloglin} methods \code{\link{summary.genloglin}}, \code{\link{residu
 
 The \code{\link{glm}} function for fitting generalized linear models.
 
-The \code{\link{SPMI.test}} function for testing for SPMI among two MRCVs.
+The \code{\link{MI.test}} function for testing for MMI (one MRCV case) or SPMI (two MRCV case).
 }
 \examples{
 # Estimate the y-main effects model for 2 MRCVs
@@ -124,13 +124,14 @@ anova(mod.fit, model.HA = "saturated", type = "rs2")
 # Obtain observed and model-predicted odds ratios
 predict(mod.fit)
 
-# Estimate a model that is not one of the primary models
+# Estimate a model that is not one of the named models
 # Note that this was the final model chosen by Bilder and Loughin (2007)
 mod.fit.other <- genloglin(data = farmer2, I = 3, J = 4, model = count ~ -1 + W:Y + 
-    wi:W:Y + yj:W:Y + wi:yj + wi:yj:Y + wi:yj:W3:Y1, boot = FALSE)
+    wi\%in\%W:Y + yj\%in\%W:Y + wi:yj + wi:yj\%in\%Y + wi:yj\%in\%W3:Y1, boot = 
+    FALSE)
 # Compare this model to the y-main effects model
-anova(mod.fit, model.HA = count ~ -1 + W:Y + wi:W:Y + yj:W:Y + wi:yj + wi:yj:Y + 
-    wi:yj:W3:Y1, type = "rs2", gof = TRUE)
+anova(mod.fit, model.HA = count ~ -1 + W:Y + wi\%in\%W:Y + yj\%in\%W:Y + wi:yj + 
+    wi:yj\%in\%Y + wi:yj\%in\%W3:Y1, type = "rs2", gof = TRUE)
 
 # To obtain bootstrap results from the method functions the genloglin() boot 
 # argument must be specified as TRUE (the default)
@@ -144,8 +145,9 @@ predict(mod.fit)
 
 # Estimate a model for 3 MRCVs
 mod.fit.three <- genloglin(data = farmer3, I = 3, J = 4, K = 5, model = count ~ 
-    -1 + W:Y:Z + wi:W:Y:Z + yj:W:Y:Z + zk:W:Y:Z + wi:yj + wi:yj:Y + wi:yj:W + 
-    wi:yj:Y:W + yj:zk + yj:zk:Z + yj:zk:Y + yj:zk:Z:Y, boot = TRUE, B = 99)
+    -1 + W:Y:Z + wi\%in\%W:Y:Z + yj\%in\%W:Y:Z + zk\%in\%W:Y:Z + wi:yj + 
+    wi:yj\%in\%Y + wi:yj\%in\%W + wi:yj\%in\%Y:W + yj:zk + yj:zk\%in\%Z + 
+    yj:zk\%in\%Y + yj:zk\%in\%Z:Y, boot = TRUE, B = 99)
 residuals(mod.fit.three)
 anova(mod.fit.three, model.HA = "saturated", type = "all")
 predict(mod.fit.three, pair = "WY")}
