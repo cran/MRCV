@@ -1,10 +1,6 @@
 \name{MI.test}
 \alias{MI.test}
-\alias{MMI.test}
-\alias{SPMI.test}
 \alias{MI.stat}
-\alias{MMI.stat}
-\alias{SPMI.stat}
 \title{
 Test for Marginal Independence
 }
@@ -15,17 +11,7 @@ The \code{MI.test} function offers three approaches for testing multiple margina
 MI.test(data, I, J, type = "all", B = 1999, B.max = B, summary.data = 
     FALSE, add.constant = 0.5, plot.hist = FALSE, print.status = TRUE)
     
-MMI.test(data, I, J, type, B, B.max, summary.data, add.constant, 
-    plot.hist, print.status)
-    
-SPMI.test(data, I, J, type, B, B.max, summary.data, add.constant, 
-    plot.hist, print.status)
-
 MI.stat(data, I, J, summary.data = FALSE, add.constant = 0.5)
-
-MMI.stat(data, I, J, summary.data, add.constant)
-
-SPMI.stat(data, I, J, summary.data, add.constant)
 }
 \arguments{
   \item{data}{
@@ -62,9 +48,9 @@ A logical value indicating whether bootstrap progress updates should be provided
 }
 }
 \details{
-The \code{MI.test} function is a wrapper function for \code{MMI.test} and \code{SPMI.test} which perform the testing of MMI or SPMI.  Three sets of testing methods are implemented:
+The \code{MI.test} function calls \code{MI.stat} to calculate a modified Pearson statistic (see Bilder, Loughin, and Nettleton (2000) and Bilder and Loughin (2004)), and then performs the testing of MMI or SPMI.  Three sets of testing methods are implemented:
 \itemize{
-\item{The nonparametric bootstrap resamples under the null hypothesis by independently sampling the W and Y vectors with replacement from the observed data.  Fixed row counts (i.e., fixed counts for each level of the SRCV) are maintained for the one MRCV case.  A modified Pearson statistic (see Bilder, Loughin, and Nettleton (2000) and Bilder and Loughin (2004)) is calculated for each resample.  In addition, bootstrap p-value combination methods are available to take advantage of the modified Pearson statistic's decomposition into J (one MRCV case) or IxJ (two MRCV case) individual Pearson statistics.  The minimum or the product of p-values is the combination for each resample.} {}
+\item{The nonparametric bootstrap resamples under the null hypothesis by independently sampling the W and Y vectors with replacement from the observed data.  Fixed row counts (i.e., fixed counts for each level of the SRCV) are maintained for the one MRCV case.  A modified Pearson statistic is calculated for each resample.  In addition, bootstrap p-value combination methods are available to take advantage of the modified Pearson statistic's decomposition into J (one MRCV case) or IxJ (two MRCV case) individual Pearson statistics.  The minimum or the product of p-values is the combination for each resample.} {}
 \item{The Rao-Scott approach applies a second-order adjustment to the modified Pearson statistic and its sampling distribution.  Formulas are provided in Appendix A of Bilder, Loughin, and Nettleton (2000) and Bilder and Loughin (2004).  Note that this test can be conservative at times.} {}
 \item{The Bonferroni adjustment multiplies each p-value (using a standard chi-square approximation) from the individual Pearson statistics by J (one MRCV case) or IxJ (two MRCV case).  If a resulting p-value is greater than 1 after the multiplication, it is set to a value of 1.  The overall p-value for the test then is the minimum of these adjusted p-values.  Note that the Bonferroni adjustment tends to produce an overly conservative test when the number of individual Pearson statistics is large.} {}
 }
@@ -72,7 +58,7 @@ The \code{MI.test} function is a wrapper function for \code{MMI.test} and \code{
 Agresti and Liu (1999) discuss a marginal logit model approach that uses generalized estimation equations (GEE) to test for MMI.  As shown in the example given below, this approach can be performed via functions available from the \bold{geepack} package.  However, Bilder, Loughin, and Nettleton (2000) caution that the Wald test produced by this approach does not hold the correct size, particularly when the sample size is not large and marginal probabilities are small.
 }
 \value{
---- For \code{MI.test}, \code{MMI.test}, and \code{SPMI.test}, a list containing at least \code{general}, a list containing the following objects:
+--- \code{MI.test} returns a list containing at least \code{general}, a list containing the following objects:
 \itemize{
 \item{\code{data}:} {The original data frame supplied to the \code{data} argument.}
 \item{\code{I}:} {The original value supplied to the \code{I} argument.}
@@ -110,7 +96,7 @@ Agresti and Liu (1999) discuss a marginal logit model approach that uses general
 
 --- For \code{type = "all"}, the list includes all of the above objects.
 
---- \code{MI.stat}, \code{MMI.stat}, and \code{SPMI.stat} return a list containing the following objects:
+--- \code{MI.stat} returns a list containing the following objects:
 \itemize{
 \item{\code{X.sq.S}:} {Defined above.}
 \item{\code{X.sq.S.ij}:} {Defined above.}

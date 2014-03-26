@@ -15,7 +15,7 @@ The \code{anova.genloglin} method function offers second-order Rao-Scott and boo
 An object of class \code{'genloglin'} produced by the \code{\link{genloglin}} function.
 }
   \item{model.HA}{
-For the two MRCV case, a character string specifying one of the following models to be compared to the null model (where the null model should be nested within the alternative model): \code{"homogeneous"} (the homogeneous association model), \code{"w.main"} (the w-main effects model), \code{"y.main"} (the y-main effects model), \code{"wy.main"} (the w- and y-main effects model), or \code{"saturated"}.  Alternatively, a user-supplied formula can be specified as a character string.  For the three MRCV case, only \code{"saturated"} or user-supplied formulas are accepted. 
+For the two MRCV case, a character string specifying one of the following models to be compared to the null model (where the null model should be nested within the alternative model): \code{"homogeneous"} (the homogeneous association model), \code{"w.main"} (the w-main effects model), \code{"y.main"} (the y-main effects model), \code{"wy.main"} (the w- and y-main effects model), or \code{"saturated"}.  Alternatively, a user-supplied formula can be specified.  For the three MRCV case, only \code{"saturated"} or user-supplied formulas are accepted. 
 }
   \item{type}{
 A character string specifying one of the following approaches for performing adjusted model comparison tests: \code{"boot"} specifies a bootstrapping procedure; \code{"rs2"} specifies a Rao-Scott second-order adjustment; \code{"all"} specifies both approaches.

@@ -1,6 +1,5 @@
 \name{genloglin}
 \alias{genloglin}
-\alias{genloglin.fit}
 \title{
 Model the Association Among Two or Three MRCVs
 }
@@ -10,14 +9,10 @@ The \code{genloglin} function uses a generalized loglinear modeling approach to 
 \usage{
 genloglin(data, I, J, K = NULL, model, add.constant = 0.5, boot = TRUE, 
     B = 1999, B.max = B, print.status = TRUE)
-  
-genloglin.fit(data, model, nvars, limit.output = FALSE, model.vars = NULL)
 }
 \arguments{
   \item{data}{
-For \code{genloglin}: A data frame containing the raw data where rows correspond to the individual item response vectors, and columns correspond to the binary items, W1, \ldots, WI, Y1, \ldots, YJ, and Z1, \ldots, ZK (in this order).
-
-For \code{genloglin.fit} and observed data: For the two MRCV case, a data frame containing 2Ix2J rows and 5 columns generically named \code{W}, \code{Y}, \code{wi}, \code{yj}, and \code{count}.  For the three MRCV case, a data frame containing 2Ix2Jx2K rows and 7 columns generically named \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, \code{zk}, and \code{count}. For \code{genloglin.fit} and bootstrap data, the data frame only contains the \code{count} column.
+A data frame containing the raw data where rows correspond to the individual item response vectors, and columns correspond to the binary items, W1, \ldots, WI, Y1, \ldots, YJ, and Z1, \ldots, ZK (in this order).
 }
   \item{I}{
 The number of items corresponding to row variable W.
@@ -29,7 +24,7 @@ The number of items corresponding to column variable Y.
 The number of items corresponding to strata variable Z.
 }
   \item{model}{
-For the two MRCV case, a character string specifying one of the following models: \code{"spmi"} (the complete independence model), \code{"homogeneous"} (the homogeneous association model), \code{"w.main"} (the w-main effects model), \code{"y.main"} (the y-main effects model), \code{"wy.main"} (the w-main and y-main effects model), or \code{"saturated"}.  Alternatively, a user-supplied formula can be specified as a character string, where the formula is limited to the generic variables \code{W}, \code{Y}, \code{wi}, \code{yj}, \code{count}, \code{W1},\ldots, \code{WI}, and \code{Y1},\ldots, \code{YJ}.  For the three MRCV case, only user-supplied formulas are accepted. In addition to the generic variables defined for two MRCVs, the formula may include the generic variables \code{Z}, \code{zk}, and \code{Z1},\ldots, \code{ZK}.
+For the two MRCV case, a character string specifying one of the following models: \code{"spmi"} (the complete independence model), \code{"homogeneous"} (the homogeneous association model), \code{"w.main"} (the w-main effects model), \code{"y.main"} (the y-main effects model), \code{"wy.main"} (the w-main and y-main effects model), or \code{"saturated"}.  Alternatively, a user-supplied formula can be specified, where the formula is limited to the generic variables \code{W}, \code{Y}, \code{wi}, \code{yj}, \code{count}, \code{W1},\ldots, \code{WI}, and \code{Y1},\ldots, \code{YJ}.  For the three MRCV case, only user-supplied formulas are accepted. In addition to the generic variables defined for two MRCVs, the formula may include the generic variables \code{Z}, \code{zk}, and \code{Z1},\ldots, \code{ZK}.
 }
   \item{add.constant}{
 A positive constant to be added to all zero marginal cell counts.
@@ -46,20 +41,9 @@ The maximum number of bootstrap resamples.  Resamples for which at least one ite
   \item{print.status}{
 A logical value indicating whether progress updates should be provided.  When \code{print.status = TRUE}, the status of the IPF algorithm is printed after every 5 iterations.  Upon completion of the IPF algorithm, a progress bar appears that documents progress of the bootstrap.
 }
-  \item{nvars}{
-The number of MRCVs.
-}
-  \item{limit.output}{
-A logical value indicating whether only partial model fit information should be returned. Used solely for programming convenience when performing the bootstrap.
-}
-  \item{model.vars}{
-For observed data: \code{model.vars = NULL}.
-
-For bootstrap resamples: For the two MRCV case, a data frame containing 2Ix2J rows and 4 columns generically named \code{W}, \code{Y}, \code{wi}, and \code{yj}.  For the three MRCV case, a data frame containing 2Ix2Jx2K rows and 6 columns generically named \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, and \code{zk}.
-}
 }
 \details{
-The \code{genloglin} function first converts the raw data into a form that can be used for estimation.  For the two MRCV case, the reformatted data frame contains 2Ix2J rows and 5 columns generically named \code{W}, \code{Y}, \code{wi}, \code{yj}, and \code{count}.  For the three MRCV case, the reformatted data frame contains 2Ix2Jx2K rows and 7 columns generically named \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, \code{zk}, and \code{count}.  Then, the model of interest is estimated by calling the \code{\link{genloglin.fit}} function which in turn calls the \code{\link{glm}} function where the \code{family} argument is specified as \code{poisson}.  For all predictor variables, the first level is the reference group (i.e., 1 is the reference for variables \code{W}, \code{Y}, and \code{Z}, and 0 is the reference for variables \code{wi}, \code{yj}, and \code{zj}).  Because the model is fit to the marginal counts and the marginal counts do not actually follow a multinomial distribution, standard errors and model fit information need to be adjusted.  For this reason, the \code{genloglin.fit} function is not normally called directly.
+The \code{genloglin} function first converts the raw data into a form that can be used for estimation.  For the two MRCV case, the reformatted data frame contains 2Ix2J rows and 5 columns generically named \code{W}, \code{Y}, \code{wi}, \code{yj}, and \code{count}.  For the three MRCV case, the reformatted data frame contains 2Ix2Jx2K rows and 7 columns generically named \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, \code{zk}, and \code{count}.  Then, the model of interest is estimated by calling the \code{\link{glm}} function where the \code{family} argument is specified as \code{poisson}.  For all predictor variables, the first level is the reference group (i.e., 1 is the reference for variables \code{W}, \code{Y}, and \code{Z}, and 0 is the reference for variables \code{wi}, \code{yj}, and \code{zj}).
 
 The \code{boot} argument must equal \code{TRUE} in order to obtain bootstrap results with the \code{genloglin} method functions.
 }
@@ -99,8 +83,6 @@ The \code{boot} argument must equal \code{TRUE} in order to obtain bootstrap res
 \item{\code{lrt.star}:} {A numeric vector of length \code{B.use} containing the LRT statistics calculated for each resample.}
 \item{\code{residual.star}:} {A numeric matrix with 2Ix2J rows (or 2Ix2Jx2K rows for the three MRCV case) and \code{B.use} columns containing the residuals calculated for each resample.}
 }
-
---- The \code{genloglin.fit} function returns a list containing the same objects returned by \code{\link{glm}} when \code{limit.output = FALSE}, and a numeric vector containing the 2Ix2J (or 2Ix2Jx2K) model-predicted counts when \code{limit.output = TRUE}.  For bootstrap resamples, the vector additionally includes the residual deviance of the fitted model.
 }
 \references{
 Bilder, C. and Loughin, T. (2007)  Modeling association between two or more categorical variables that allow for multiple category choices.  \emph{Communications in Statistics--Theory and Methods}, \bold{36}, 433--451.

@@ -3,19 +3,51 @@
 #                      Functions for Bilder & Loughin (2004)                        #
 #####################################################################################
 
-globalVariables("counter", package = "MRCV")
+.onLoad<-function(libname, pkgname) {
+  assign("MRCV_globals", new.env(), envir=parent.env(environment()))
+}
 
 # item.response.table() 
 # A function that converts a raw data set to an item response table 
 # or data frame (create.dataframe = TRUE)
 
 item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
-  if (is.numeric(K)) {
+  op<-options()
+  on.exit(options(op))
+  options(warn=1)
+  if((class(data)!="data.frame")&(class(data)!="matrix")) {
+    stop("The \"data\" argument requires an object of class \"data.frame\".")
+  }
+  data<-as.data.frame(data)
+  if ((I==0)|(J==0)) {
+    stop("\"I\" and \"J\" must be greater than 0.")
+  }
+  if (!is.numeric(I)|!is.numeric(J)) {
+    stop("\"I\" and \"J\" must be numeric.")
+  }
+  if ((I%%1!=0)|(J%%1!=0)) {
+    stop("\"I\" and \"J\" must be integers.")
+  }
+  I<-as.integer(I)
+  J<-as.integer(J)
+  if (!is.null(K)) {
+    if (!is.numeric(K)) {
+      stop("\"K\" must be numeric or NULL.")
+    }
+    if (K%%1!=0) {
+      stop("\"K\" must be an integer.")
+    }
+    K<-as.integer(K)
     if (K==0) {
       K<-NULL
     }
   }
-  nvars<-1+(1-((I==1)|(J==1)))+is.numeric(K)
+  if ((class(create.dataframe)!="logical")&(create.dataframe!=1)&(create.dataframe!=0)) {
+    warning("The \"create.dataframe\" argument requires a logical value. \n  The input value has been changed to the default value of FALSE.")
+    create.dataframe<-FALSE
+  }
+  create.dataframe<-as.logical(create.dataframe)
+  nvars<-1+((I>1)&(J>1))+is.numeric(K)
   if (nvars==1) {
     srcv<-ifelse(I==1,1,I+1)
     mrcv<-ifelse(I==1,2,1)
@@ -41,16 +73,16 @@ item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
     wy.count[,3]<-as.numeric(wy.count[,3])
     wy.count[,4]<-as.numeric(wy.count[,4])
     colnames(wy.count) <- c("W", "Y", "yj", "count")
-    ir.table<-tabular(Heading()*count*Heading()*W
-                      ~Heading()*Y*Heading()*Factor(yj, yj, c("0","1   "))*Heading()*mean, 
-                      data=wy.count)
-    output<-ir.table
-    #Create a summary data set
+    if (!create.dataframe) {
+      output<-tabular(Heading()*count*Heading()*W
+                        ~Heading()*Y*Heading()*Factor(yj, yj, c("0","1   "))*Heading()*mean, 
+                        data=wy.count)
+    }
     if (create.dataframe) {
       output<-wy.count
     }
   }
-  nrows<-(2^nvars)*I*max(1,J)*max(1,K)
+  nrows<-(2^nvars)*I*J*max(1,K)
   if (nvars==2) {
     wy.count<-as.data.frame(matrix(data = NA, nrow = nrows, ncol = (2*nvars+1)))
     counter<-0
@@ -73,11 +105,11 @@ item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
     wy.count[,(nvars+1):(2*nvars+1)]<-lapply(wy.count[,(nvars+1):(2*nvars+1)], 
                                              as.numeric)
     colnames(wy.count) <- c("W", "Y", "wi", "yj", "count")
-    ir.table<-tabular(count*(mean)*W*Heading()*Factor(wi, wi, c("0","1 "))
-                      ~Heading()*Y*Heading()*Factor(yj, yj, c("0","1   ")), data=wy.count, 
-                      suppressLabels=3)
-    output<-ir.table
-    #Create a summary data set
+    if (!create.dataframe) {
+      output<-tabular(count*(mean)*W*Heading()*Factor(wi, wi, c("0","1 "))
+                        ~Heading()*Y*Heading()*Factor(yj, yj, c("0","1   ")), data=wy.count, 
+                        suppressLabels=3)
+    }
     if (create.dataframe) {
       output<-wy.count
     }
@@ -115,22 +147,22 @@ item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
     wyz.count[,(nvars+1):(2*nvars+1)]<-lapply(wyz.count[,(nvars+1):(2*nvars+1)], 
                                               as.numeric)
     colnames(wyz.count) <- c("W", "Y", "Z", "wi", "yj", "zk", "count")
-    ir.table<-vector("list", K*2)
-    ir.table.names<-matrix(data=NA, nrow=1, ncol=K*2)
-    counter<-0
-    for (k in 1:K) {
-      for (c in 0:1) {
-        counter<-counter+1
-        ir.table[counter]<-list(tabular(count*(mean)*W*Heading()*Factor(wi, wi, c("0","1 "))
-                          ~Heading()*Y*Heading()*Factor(yj, yj, c("0","1   ")), 
-                          data=wyz.count[((wyz.count[,3]==names(data)[I+J+k])&(wyz.count[,6]==c)),], 
-                          suppressLabels=3))
-        ir.table.names[1,counter]<-paste(names(data[(I+J+k)]), "=", c)
+    if (!create.dataframe) {
+      output<-vector("list", K*2)
+      output.names<-matrix(data=NA, nrow=1, ncol=K*2)
+      counter<-0
+      for (k in 1:K) {
+        for (c in 0:1) {
+          counter<-counter+1
+          output[counter]<-list(tabular(count*(mean)*W*Heading()*Factor(wi, wi, c("0","1 "))
+                            ~Heading()*Y*Heading()*Factor(yj, yj, c("0","1   ")), 
+                            data=wyz.count[((wyz.count[,3]==names(data)[I+J+k])&(wyz.count[,6]==c)),], 
+                            suppressLabels=3))
+          output.names[1,counter]<-paste(names(data[(I+J+k)]), "=", c)
+        }
       }
+      names(output)<-output.names
     }
-    names(ir.table)<-ir.table.names
-    output<-ir.table
-    #Create a summary data set
     if (create.dataframe) {
       output<-wyz.count
     }
@@ -144,12 +176,37 @@ item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
 # A function that converts a raw data set to a marginal table
 
 marginal.table<-function(data, I, J, K = NULL) {
-  if (is.numeric(K)) {
+  op<-options()
+  on.exit(options(op))
+  options(warn=1)
+  if((class(data)!="data.frame")&(class(data)!="matrix")) {
+    stop("The \"data\" argument requires an object of class \"data.frame\".")
+  }
+  data<-as.data.frame(data)
+  if ((I==0)|(J==0)) {
+    stop("\"I\" and \"J\" must be greater than 0.")
+  }
+  if (!is.numeric(I)|!is.numeric(J)) {
+    stop("\"I\" and \"J\" must be numeric.")
+  }
+  if ((I%%1!=0)|(J%%1!=0)) {
+    stop("\"I\" and \"J\" must be integers.")
+  }
+  I<-as.integer(I)
+  J<-as.integer(J)
+  if (!is.null(K)) {
+    if (!is.numeric(K)) {
+      stop("\"K\" must be numeric or NULL.")
+    }
+    if (K%%1!=0) {
+      stop("\"K\" must be an integer.")
+    }
+    K<-as.integer(K)
     if (K==0) {
       K<-NULL
     }
   }
-  nvars<-1+(1-((I==1)|(J==1)))+is.numeric(K)
+  nvars<-1+((I>1)&(J>1))+is.numeric(K)
   if (nvars==1) {
     srcv<-ifelse(I==1,1,I+1)
     mrcv<-ifelse(I==1,2,1)
@@ -159,22 +216,22 @@ marginal.table<-function(data, I, J, K = NULL) {
     merge.matrix<-as.data.frame(matrix(data= NA, nrow = 1, ncol = 4))
     counter<-0
     for (i in 1:c) {
-       wy.count[1:r,1]<-levels(as.factor(data[,srcv]))
-       wy.count[1:r,2]<-rep(names(data)[(mrcv+i-1)],r)
-       wy.count[1:r,3]<-as.matrix(table(data[,srcv],data[,(mrcv+i-1)]))[,2]
-       wy.count[1:r,4]<-as.matrix(table(data[,srcv]))
-       if (i==1) {
-         for (j in 1:r) {
-           rep.matrix<-matrix(as.vector(rep(as.vector(wy.count[j,]),
-                       wy.count[j,4]-(c-1))), (wy.count[j,4]-(c-1)), 4, 
-                       byrow=TRUE)
-           merge.matrix<-rbind(merge.matrix, rep.matrix)
-         }
-       n.iplus<-as.matrix(table(data[,srcv]))
-       }
-       if (i > 1) {
-         merge.matrix<-rbind(merge.matrix,wy.count)
-       }
+      wy.count[1:r,1]<-levels(as.factor(data[,srcv]))
+      wy.count[1:r,2]<-rep(names(data)[(mrcv+i-1)],r)
+      wy.count[1:r,3]<-as.matrix(table(data[,srcv],data[,(mrcv+i-1)]))[,2]
+      wy.count[1:r,4]<-as.matrix(table(data[,srcv]))
+      if (i==1) {
+        for (j in 1:r) {
+          rep.matrix<-matrix(as.vector(rep(as.vector(wy.count[j,]),
+                             wy.count[j,4]-(c-1))), (wy.count[j,4]-(c-1)), 4, 
+                             byrow=TRUE)
+          merge.matrix<-rbind(merge.matrix, rep.matrix)
+        }
+        n.iplus<-as.matrix(table(data[,srcv]))
+      }
+      if (i > 1) {
+        merge.matrix<-rbind(merge.matrix,wy.count)
+      }
       counter<-counter+1
     }
     merge.matrix<-merge.matrix[2:nrow(merge.matrix),]
@@ -183,23 +240,23 @@ marginal.table<-function(data, I, J, K = NULL) {
     merge.matrix[,3]<-as.numeric(unlist(merge.matrix[,3]))
     merge.matrix[,4]<-as.numeric(unlist(merge.matrix[,4]))
     colnames(merge.matrix) <- c("W", "Y", "count", "n")
-    counter<--1
-    counter<<-counter
+    MRCV_globals$n.iplus<-n.iplus
+    MRCV_globals$c<-c
+    MRCV_globals$counter<--1
     calc.percent <- function(x) {
-      counter<<-counter+1
-      perc<-round(100*mean(x)/n.iplus[(trunc(counter/c)+1)], 2)
+      MRCV_globals$counter<-MRCV_globals$counter+1
+      perc<-round(100*mean(x)/MRCV_globals$n.iplus[(trunc(MRCV_globals$counter/MRCV_globals$c)+1)], 2)
       if (perc==0) {
         perc<-"0.00"
       }
       perc
     }
     marginal.table<-tabular(Heading()*count*Heading()*W
-                    ~Justify(l)*(n=1)+Heading()*Y*(Heading("count")*mean + 
-                    Heading("  %     ")*calc.percent), data=merge.matrix)
-    counter<-NULL
+                            ~Justify(l)*(n=1)+Heading()*Y*(Heading("count")*mean + 
+                            Heading("  %     ")*calc.percent), data=merge.matrix)
   }
   n<-nrow(data)
-  nrows<-I*max(1,J)*max(1,K)
+  nrows<-I*J*max(1,K)
   calc.percent <- function(x) {
     perc<-round(100*mean(x)/n, 2)
     if (perc==0) {
@@ -252,7 +309,6 @@ marginal.table<-function(data, I, J, K = NULL) {
     }
     names(marginal.table)<-names(data[(I+J+1):(I+J+K)])
   }
-  c<-NULL
   marginal.table
 }
 
@@ -273,6 +329,8 @@ check.zero<-function(value, add.constant = .5) {
 # Called by the general MI.stat() function
 
 MMI.stat<-function(data, I, J, summary.data, add.constant) {
+  op<-options()
+  on.exit(options(op))
   srcv<-ifelse(I==1,1,I+1)
   mrcv<-ifelse(I==1,2,1)
   c<-ifelse(I==1,J,I)
@@ -303,7 +361,7 @@ MMI.stat<-function(data, I, J, summary.data, add.constant) {
   }  
   
   #For inputted data set that is a raw file
-  if (1-summary.data) {
+  if (!summary.data) {
     r<-length(levels(as.factor(data[,srcv])))
     X.sq.S.ij<-matrix(data = NA, nrow = 1, ncol = c)
     counter<-0
@@ -311,11 +369,11 @@ MMI.stat<-function(data, I, J, summary.data, add.constant) {
       #Only calculate statistics for valid tables (correct dim = rx2)
       if (sum(dim(table(data[,srcv],data[,(mrcv+i-1)])))==(r+2)){
         counter<-counter+1
-        options(warn = -1) 
         n.table<-table(data[,srcv],data[,(mrcv+i-1)])
         #Add .5 to 0 cell counts
         n.table<-apply(X = n.table, MARGIN = c(1,2), FUN = check.zero, 
                        add.constant = add.constant)
+        options(warn = -1) 
         X.sq.S.ij[1, i]<-chisq.test(n.table,correct=F)$statistic
         options(warn = 0) 
       }
@@ -334,6 +392,8 @@ MMI.stat<-function(data, I, J, summary.data, add.constant) {
 # Called by the general MI.stat() function
 
 SPMI.stat<-function(data, I, J, summary.data, add.constant) {
+  op<-options()
+  on.exit(options(op))
   #For inputted data set that is a summary file
   if (summary.data) {
     data[,1:2]<-lapply(data[,1:2], factor)
@@ -370,7 +430,7 @@ SPMI.stat<-function(data, I, J, summary.data, add.constant) {
   }  
   
   #For inputted data set that is a raw file
-  if (1-summary.data) {
+  if (!summary.data) {
     X.sq.S.ij<-matrix(data = NA, nrow = I, ncol = J)
     counter<-0
     for (i in 1:I) {
@@ -378,11 +438,11 @@ SPMI.stat<-function(data, I, J, summary.data, add.constant) {
         #Only calculate statistics for valid tables (correct dim = 2x2)
         if (sum(dim(table(data[,i],data[,(I+j)])))==4){
           counter<-counter+1
-          options(warn = -1) 
           n.table<-table(data[,i],data[,(I+j)])
           #Add .5 to 0 cell counts
           n.table<-apply(X = n.table, MARGIN = c(1,2), FUN = check.zero, 
                          add.constant = add.constant)
+          options(warn = -1)
           X.sq.S.ij[i, j]<-chisq.test(n.table,correct=F)$statistic
           options(warn = 0) 
         }
@@ -402,7 +462,7 @@ SPMI.stat<-function(data, I, J, summary.data, add.constant) {
 # A function that calculates X^2_S and X^2_S.ij
 
 MI.stat<-function(data, I, J, summary.data = FALSE, add.constant = .5) {
-  nvars<-1+(1-((I==1)|(J==1)))
+  nvars<-1+((I>1)&(J>1))
   if (nvars==1) {
     output<-MMI.stat(data = data, I = I, J = J, summary.data = summary.data, 
                      add.constant = add.constant)
@@ -429,6 +489,8 @@ check.min<-function(value) {
 # Function used to control display of output with class MMI
 
 print.MMI<-function(x, ...) {
+  op<-options()
+  on.exit(options(op))
   options(scipen=10)
   type<-names(x)
   data<-x$general$data
@@ -445,7 +507,7 @@ print.MMI<-function(x, ...) {
     rownames(X.sq.S.ij)<-""
     colnames(X.sq.S.ij)<-levels(data[,2]) 
   }
-  if (1-summary.data) {
+  if (!summary.data) {
     r<-length(levels(as.factor(data[,srcv])))
     rownames(X.sq.S.ij)<-""
     colnames(X.sq.S.ij)<-names(data)[mrcv:(mrcv+c-1)]
@@ -504,7 +566,7 @@ print.MMI<-function(x, ...) {
       rownames(X.sq.S.ij.p.bon)<-""
       colnames(X.sq.S.ij.p.bon)<-levels(data[,2]) 
     }
-    if (1-summary.data) {
+    if (!summary.data) {
       rownames(X.sq.S.ij.p.bon)<-""
       colnames(X.sq.S.ij.p.bon)<-names(data)[mrcv:(mrcv+c-1)] 
     }
@@ -514,7 +576,6 @@ print.MMI<-function(x, ...) {
     print.default(X.sq.S.ij.p.bon, quote=FALSE)
     cat("\n")
   } 
-  options(scipen=0)
   invisible(x)
 }
 
@@ -524,6 +585,8 @@ print.MMI<-function(x, ...) {
 # Function used to control display of output with class SPMI
 
 print.SPMI<-function(x, ...) {
+  op<-options()
+  on.exit(options(op))
   options(scipen=10)
   type<-names(x)
   data<-x$general$data
@@ -536,7 +599,7 @@ print.SPMI<-function(x, ...) {
     rownames(X.sq.S.ij)<-levels(data[,1])
     colnames(X.sq.S.ij)<-levels(data[,2]) 
   }
-  if (1-summary.data) {
+  if (!summary.data) {
     rownames(X.sq.S.ij)<-names(data)[1:I]
     colnames(X.sq.S.ij)<-names(data)[(I+1):(I+J)]
   }
@@ -602,7 +665,6 @@ print.SPMI<-function(x, ...) {
     print.default(X.sq.S.ij.p.bon, quote=FALSE)
     cat("\n")
   }
-  options(scipen=0)
   invisible(x)
 }
 
@@ -622,7 +684,7 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
   if (summary.data) {
     r<-length(levels(as.factor(data[,1])))
   }
-  if (1-summary.data) {
+  if (!summary.data) {
     r<-length(levels(as.factor(data[,srcv])))
   }
   #Observed statistics 
@@ -637,7 +699,7 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
     X.sq.S.star<-numeric(length(B.max))
     p.value.b.min<-numeric(length(B.max))
     p.value.b.prod<-numeric(length(B.max))
-    X.sq.S.ij.star<-matrix(data=NA, nrow = c, ncol = B.max)
+    X.sq.S.ij.star<-matrix(data = NA, nrow = c, ncol = B.max)
     discard<-0 #Count number of resamples with incorrect dimensions
     counter<-0
     b<-0
@@ -672,7 +734,7 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
           setTxtProgressBar(pb, b)
         }
       }
-      if (1-(B==B.max)) {
+      if (B!=B.max) {
         if (print.status) {
           left<-B.max-filled
           expect<-(1-drop)*min(left,(B-counter))+drop*max(left,(B.max-b))
@@ -756,14 +818,15 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
     D<-kronecker(diag(as.vector(n/n_iplus)),diag(as.vector(pi.not.j*(1-pi.not.j))))
     V<-matrix(data = 0, nrow = r*2^c, ncol = r*2^c)
     for (i in 1:r) {
-      V[((i-1)*2^c+1):((i-1)*2^c+2^c),((i-1)*2^c+1):((i-1)*2^c+2^c)]<-((1/a.i[i])
+       V[((i-1)*2^c+1):((i-1)*2^c+2^c),((i-1)*2^c+1):((i-1)*2^c+2^c)]<-((1/a.i[i])
           *(diag(as.vector(tau[((i-1)*2^c+1):((i-1)*2^c+2^c)]))
-          -tau[((i-1)*2^c+1):((i-1)*2^c+2^c)]%*%t(tau[((i-1)*2^c+1):((i-1)*2^c+2^c)])))
+          -tcrossprod(tau[((i-1)*2^c+1):((i-1)*2^c+2^c)])))
     }
-    Di.HGVGH<-solve(D)%*%H%*%G%*%V%*%t(G)%*%t(H)
+    Di.HGVGH<-diag(1/diag(D),dim(D))%*%H%*%G%*%tcrossprod(tcrossprod(V,G),H)
     Di.HGVGH.eigen<-Re(eigen(Di.HGVGH)$values) 
-    X.sq.S.rs2<-(r-1)*c*observed$X.sq.S/sum(Di.HGVGH.eigen^2) 
-    df.rs2<-(r-1)^2*c^2/sum(Di.HGVGH.eigen^2)       
+    sum.Di.HGVGH.eigen.sq<-sum(Di.HGVGH.eigen^2)
+    X.sq.S.rs2<-(r-1)*c*observed$X.sq.S/sum.Di.HGVGH.eigen.sq 
+    df.rs2<-(r-1)^2*c^2/sum.Di.HGVGH.eigen.sq       
     X.sq.S.p.value.rs2<-1-pchisq(q = X.sq.S.rs2, df = df.rs2) 
     output<-list(general = list(data = data, I = I, J = J, summary.data = 
                  summary.data, X.sq.S = observed$X.sq.S, X.sq.S.ij = 
@@ -783,12 +846,6 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
                  observed$X.sq.S.ij), bon = list(p.value.bon = p.value.bon, 
                  X.sq.S.ij.p.bon = X.sq.S.ij.p.bon))
     output.bon<-list(p.value.bon = p.value.bon, X.sq.S.ij.p.bon = X.sq.S.ij.p.bon) 
-    if (summary.data) {
-      output<-list(general = list(data = data, I = I, J = J, summary.data = 
-                 summary.data, X.sq.S = observed$X.sq.S, X.sq.S.ij = 
-                 observed$X.sq.S.ij), bon = list(p.value.bon = p.value.bon, 
-                 X.sq.S.ij.p.bon = X.sq.S.ij.p.bon))
-    }
   }
   if (type == "all") {
     output<-list(general = list(data = data, I = I, J = J, summary.data = 
@@ -857,7 +914,7 @@ SPMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot
           setTxtProgressBar(pb, b)
         }
       }
-      if (1-(B==B.max)) {
+      if (B!=B.max) {
         if (print.status) {
           left<-B.max-filled
           expect<-(1-drop)*min(left,(B-counter))+drop*max(left,(B.max-b))
@@ -942,13 +999,14 @@ SPMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot
     G.ij<-G%*%kronecker(i.2r,t(j.2c))
     H.ji<-H%*%kronecker(t(j.2r),i.2c)
     F<-GH - kronecker(pi.row,H.ji) - kronecker(G.ij,pi.col)
-    mult.cov<-diag(tau) - tau%*%t(tau)
-    sigma<-F%*%mult.cov%*%t(F)
+    mult.cov<-diag(tau) - tcrossprod(tau)
+    sigma<-F%*%tcrossprod(mult.cov,F)
     D<-diag(as.vector(kronecker(pi.row,pi.col)*kronecker(1-pi.row,1-pi.col)))
-    Di.sigma<-solve(D)%*%sigma
+    Di.sigma<-diag(1/diag(D),dim(D))%*%sigma
     Di.sigma.eigen<-Re(eigen(Di.sigma)$values) #Only use real part of eigenvalues
-    X.sq.S.rs2<-I*J*observed$X.sq.S/sum(Di.sigma.eigen^2) 
-    df.rs2<-I^2*J^2/sum(Di.sigma.eigen^2) 
+    sum.Di.sigma.eigen.sq<-sum(Di.sigma.eigen^2)
+    X.sq.S.rs2<-I*J*observed$X.sq.S/sum.Di.sigma.eigen.sq 
+    df.rs2<-I^2*J^2/sum.Di.sigma.eigen.sq 
     X.sq.S.p.value.rs2<-1-pchisq(q = X.sq.S.rs2, df = df.rs2) 
     output<-list(general = list(data = data, I = I, J = J, summary.data = 
                      summary.data, X.sq.S = observed$X.sq.S, X.sq.S.ij = 
@@ -968,12 +1026,6 @@ SPMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot
                      observed$X.sq.S.ij), bon = list(p.value.bon = p.value.bon, 
                      X.sq.S.ij.p.bon = X.sq.S.ij.p.bon))
     output.bon<-list(p.value.bon = p.value.bon, X.sq.S.ij.p.bon = X.sq.S.ij.p.bon) 
-    if (summary.data) {
-      output<-list(general = list(data = data, I = I, J = J, summary.data = 
-                     summary.data, X.sq.S = observed$X.sq.S, X.sq.S.ij = 
-                     observed$X.sq.S.ij), bon = list(p.value.bon = p.value.bon, 
-                     X.sq.S.ij.p.bon = X.sq.S.ij.p.bon))
-    }
   }
   if (type == "all") {
     output<-list(general = list(data = data, I = I, J = J, summary.data = 
@@ -994,11 +1046,81 @@ SPMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot
 MI.test<-function(data, I, J, type = "all", B = 1999, B.max = B, 
                     summary.data = FALSE, add.constant = .5, plot.hist = FALSE, 
                     print.status = TRUE) {
+  op<-options()
+  on.exit(options(op))
+  options(warn=1)
+  if((class(data)!="data.frame")&(class(data)!="matrix")) {
+    stop("The \"data\" argument requires an object of class \"data.frame\".")
+  }
+  data<-as.data.frame(data)
+  if ((I==0)|(J==0)) {
+    stop("\"I\" and \"J\" must be greater than 0.")
+  }
+  if (!is.numeric(I)|!is.numeric(J)) {
+    stop("\"I\" and \"J\" must be numeric.")
+  }
+  if ((I%%1!=0)|(J%%1!=0)) {
+    stop("\"I\" and \"J\" must be integers.")
+  }
+  I<-as.integer(I)
+  J<-as.integer(J)
+  if (length(type)>1) {
+    warning("The \"type\" argument requires an object of length 1. \n  Only the first element is used.")
+    type<-type[1]
+  }
+  if (!(type%in%c("all","boot","rs2","bon"))) {
+    warning("The \"type\" argument can only take on values of \"boot\", \"rs2\", \"bon\", and \"all\". \n  The input value has been changed to the default value of \"all\".")
+    type<-"all"
+  }
+  if (!is.numeric(B)|!is.numeric(B.max)) {
+    warning("\"B\" and \"B.max\" must be numeric. \n  The input values have been changed to the default value of 1999.")
+    B<-1999
+    B.max=B
+  }
+  if (B.max<B) {
+    warning("\"B.max\" must be greater than or equal to \"B\". \n  \"B.max\" has been set equal to \"B\".")
+    B.max=B
+  }
+  if ((B%%1!=0)|(B.max%%1!=0)) {
+    warning("\"B\" and \"B.max\" must be integers. \n  The input values have been rounded up to the nearest integer.")
+  }
+  B<-as.integer(ceiling(B))
+  B.max<-as.integer(ceiling(B.max))
+  if (!is.numeric(add.constant)) {
+    if (add.constant==FALSE) {
+      add.constant<-0
+    }
+    if (add.constant!=FALSE) {
+      warning("The \"add.constant\" argument only accepts numeric values. \n  The input value has been changed to the default value of .5.")
+      add.constant<-.5
+    }
+  }
+  if (add.constant<0) {
+    warning("The \"add.constant\" argument cannot be negative. \n  The input value has been changed to the default value of .5.")
+    add.constant<-.5
+  }
+  if ((class(summary.data)!="logical")&(summary.data!=1)&(summary.data!=0)) {
+    stop("The \"summary.data\" argument requires a logical value.")
+  }
+  if ((class(plot.hist)!="logical")&(plot.hist!=1)&(plot.hist!=0)) {
+    warning("The \"plot.hist\" argument requires a logical value. \n  The input value has been changed to the default value of FALSE.")
+    plot.hist<-FALSE
+  }
+  if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+    warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
+    print.status<-TRUE
+  }
+  summary.data<-as.logical(summary.data)
+  plot.hist<-as.logical(plot.hist)
+  print.status<-as.logical(print.status)
   #Summary data can only be used with the Bonferroni adjustment
   if (summary.data) { 
-    type<-"bon"
+    if (type!="bon") {
+      warning("Only the Bonferroni adjustment is available when summary.data = TRUE. \n  The \"type\" argument has been changed to \"bon\".")
+      type<-"bon"
+    }
   }
-  nvars<-1+(1-((I==1)|(J==1)))
+  nvars<-1+((I>1)&(J>1))
   if (nvars==1) {
     output<-MMI.test(data, I, J, type, B = B, B.max = B.max, 
                      summary.data = summary.data, add.constant = add.constant, plot.hist = plot.hist, 
