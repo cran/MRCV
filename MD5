@@ -1,13 +1,13 @@
-22a00abab4431b7f4c5429e79682a2a4 *DESCRIPTION
+e1a6574afcd2929e61b3441eaac4cfe0 *DESCRIPTION
 3e49e7d8e4c3f85665d2d48ff84f61ff *NAMESPACE
-ef0f6e7508ab5f669d95f5f1ec37b18b *R/BLfour.R
+0c52820a70d2de3ae8d0e726644d6e9c *R/BLfour.R
 a0492d5f902270cf4dc8f8a4f8846981 *R/BLseven.R
 ed3d4cdc796fd1bfd1fcda111321a119 *data/farmer1.txt.gz
 2294f9cce786549c580a27adc628c67e *data/farmer2.txt.gz
 a8a4d4b44a9de13505ed81a1bf50b69a *data/farmer3.txt.gz
 8a1071374913929480be6fdabea67134 *data/sealion.txt.gz
 23a7766ccc606ae14ee0b9fc7127c47a *man/MI.test.Rd
-5078c39ed0eea960c70d1d80e7d2e2ce *man/MRCV-package.Rd
+ec258049ebc7ff11518abcd445a2602c *man/MRCV-package.Rd
 05b2e9a267c3b9c0846c731672a9a23d *man/anova.genloglin.Rd
 2006f74deafb5e9df31c286423b1ab4b *man/farmer1.Rd
 4602bedd1e9a538f6540d4e804a86795 *man/farmer2.Rd

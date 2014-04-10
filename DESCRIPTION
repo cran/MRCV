@@ -1,6 +1,6 @@
 Package: MRCV
-Version: 0.3-0
-Date: 2014-03-26
+Version: 0.3-1
+Date: 2014-04-10
 Title: Methods for Analyzing Multiple Response Categorical Variables
         (MRCVs)
 Author: Natalie Koziol and Chris Bilder
@@ -18,7 +18,7 @@ Description: The MRCV package provides functions for analyzing the association b
     and asymptotic-based standardized residuals and model-predicted odds ratios are
     available, in addition to other descriptive information.
 License: GPL (>= 3)
-Packaged: 2014-03-26 16:08:29 UTC; nkoziol
+Packaged: 2014-04-10 17:48:30 UTC; nkoziol
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-03-26 17:53:32
+Date/Publication: 2014-04-10 21:36:37

@@ -11,8 +11,8 @@ The MRCV package provides functions for analyzing the association between one si
 \details{
 \tabular{ll}{
 Package: \tab MRCV\cr
-Version: \tab 0.3-0\cr
-Date: \tab 2014-03-26\cr
+Version: \tab 0.3-1\cr
+Date: \tab 2014-04-10\cr
 Depends: \tab R (>= 3.0.3)\cr
 Imports: \tab tables\cr
 Suggests: \tab geepack\cr

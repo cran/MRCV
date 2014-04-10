@@ -759,7 +759,8 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
                        overall.p = mean(p.value.b.prod<=p.value.prod))
     #Histograms
     if (plot.hist) {
-      par(mfrow = c(2,2))
+      layout.m <- matrix(c(1, 0, 1, 3, 2, 3, 2, 0), nrow = 2, ncol = 4)
+      layout(layout.m)
       hist(x = X.sq.S.star, main = "Test using sum statistic", xlab = 
              expression(X[S]^{"2*"}), xlim = c(min(X.sq.S.star, observed$X.sq.S), 
                                                max(X.sq.S.star, observed$X.sq.S)))
@@ -771,8 +772,7 @@ MMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot.
       hist(x = p.value.b.min, main = "Test using minimum of p-values", xlab = 
              expression(tilde(p)[min]^{"*"}), xlim = c(min(p.value.b.min, 
              p.value.min), max(p.value.b.min, p.value.min)))
-      abline(v = p.value.min, col = "darkgreen", lwd = 5) 
-      par(mfrow = c(1,1))
+      abline(v = p.value.min, col = "darkgreen", lwd = 5)
     }
     output<-list(general = list(data = data, I = I, J = J, summary.data = 
                       summary.data, X.sq.S = observed$X.sq.S, X.sq.S.ij = 
@@ -939,7 +939,8 @@ SPMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot
                        overall.p = mean(p.value.b.prod<=p.value.prod))
     #Histograms
     if (plot.hist) {
-      par(mfrow = c(2,2))
+      layout.m <- matrix(c(1, 0, 1, 3, 2, 3, 2, 0), nrow = 2, ncol = 4)
+      layout(layout.m)
       hist(x = X.sq.S.star, main = "Test using sum statistic", xlab = 
              expression(X[S]^{"2*"}), xlim = c(min(X.sq.S.star, observed$X.sq.S), 
                                                max(X.sq.S.star, observed$X.sq.S)))
@@ -952,7 +953,6 @@ SPMI.test<-function(data, I, J, type, B, B.max, summary.data, add.constant, plot
              expression(tilde(p)[min]^{"*"}), xlim = c(min(p.value.b.min, 
              p.value.min), max(p.value.b.min, p.value.min)))
       abline(v = p.value.min, col = "darkgreen", lwd = 5) 
-      par(mfrow = c(1,1))
     }
     output<-list(general = list(data = data, I = I, J = J, summary.data = 
                       summary.data, X.sq.S = observed$X.sq.S, X.sq.S.ij = 
