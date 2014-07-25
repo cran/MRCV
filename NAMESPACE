@@ -13,4 +13,4 @@ export(genloglin,
        marginal.table,
        MI.stat,
        MI.test)
-importFrom(tables, tabular, Factor)
+import(tables)
