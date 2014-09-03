@@ -1,13 +1,16 @@
-9ba2b13d1f52bf067576140950cfd9d9 *DESCRIPTION
+4f098c1a048abb24fb435546124eb76e *DESCRIPTION
 48cfcfcf5a6047b25df89fe1bbb4a878 *NAMESPACE
 0c52820a70d2de3ae8d0e726644d6e9c *R/BLfour.R
 a0492d5f902270cf4dc8f8a4f8846981 *R/BLseven.R
+9d19108a7731385f5a95d2d9345cf0ed *build/vignette.rds
 ed3d4cdc796fd1bfd1fcda111321a119 *data/farmer1.txt.gz
 2294f9cce786549c580a27adc628c67e *data/farmer2.txt.gz
 a8a4d4b44a9de13505ed81a1bf50b69a *data/farmer3.txt.gz
 8a1071374913929480be6fdabea67134 *data/sealion.txt.gz
+97987dc29da98d2cc8317d2f60f9befc *inst/doc/MRCV-vignette.Rnw
+a96e9b3bb480e72821d2fce64c26f55c *inst/doc/MRCV-vignette.pdf
 23a7766ccc606ae14ee0b9fc7127c47a *man/MI.test.Rd
-8f4cdcedf3a0eade11ff013d7c2a6b79 *man/MRCV-package.Rd
+208338d591459bdedf07cdb644ce93d1 *man/MRCV-package.Rd
 05b2e9a267c3b9c0846c731672a9a23d *man/anova.genloglin.Rd
 2006f74deafb5e9df31c286423b1ab4b *man/farmer1.Rd
 4602bedd1e9a538f6540d4e804a86795 *man/farmer2.Rd
@@ -22,3 +25,7 @@ b77566b867b9a2f530e6de0c1638a334 *man/print.genloglin.Rd
 c5b88661afd4840a61936e397199e906 *man/residuals.genloglin.Rd
 13d971da278d825a8fd2cf873b78dead *man/sealion.Rd
 9e15610ca6c6e51693542001c78ed690 *man/summary.genloglin.Rd
+97987dc29da98d2cc8317d2f60f9befc *vignettes/MRCV-vignette.Rnw
+a787aea7ca178d7aceee199f93898b7d *vignettes/MRCVplot.pdf
+3b05f24aeeafa00e6dad7ff259d82440 *vignettes/RJournal.sty
+456f210c88dd08e95fa7ccd01387d2d7 *vignettes/koziol-bilder.bib
