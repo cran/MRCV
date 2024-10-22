@@ -38,12 +38,12 @@ The bootstrap confidence intervals are available only when \code{boot = TRUE} in
 
 \code{original.arg} is a list containing the following objects:
 \itemize{
-\item{\code{data}:} {The original data frame supplied to the \code{data} argument.}
-\item{\code{I}:} {The original value supplied to the \code{I} argument.}
-\item{\code{J}:} {The original value supplied to the \code{J} argument.}
-\item{\code{K}:} {The original value supplied to the \code{K} argument.}
-\item{\code{nvars}:} {The number of MRCVs.}
-\item{\code{alpha}:} {The original value supplied to the \code{alpha} argument.}
+\item{\code{data}: The original data frame supplied to the \code{data} argument.}
+\item{\code{I}: The original value supplied to the \code{I} argument.}
+\item{\code{J}: The original value supplied to the \code{J} argument.}
+\item{\code{K}: The original value supplied to the \code{K} argument.}
+\item{\code{nvars}: The number of MRCVs.}
+\item{\code{alpha}: The original value supplied to the \code{alpha} argument.}
 }
 
 \code{OR.obs} is a numeric matrix. For the two MRCV case, the matrix contains IxJ rows corresponding to the IxJ possible pairs (Wi, Yj) and 3 columns, where column 1 corresponds to the observed odds ratio for (Wi, Yj) and columns 2 and 3 correspond to the estimated lower and upper confidence bounds, respectively.  For the three MRCV case, the matrix contains 2xIxJxK rows corresponding to all possible combinations of \code{pair} conditional on the response for each item of the 3rd MRCV, and 3 columns as described for the 2 MRCV case.
@@ -52,9 +52,9 @@ The bootstrap confidence intervals are available only when \code{boot = TRUE} in
 
 --- For \code{boot = TRUE} in the call to the \code{\link{genloglin}} function, the primary list additionally includes \code{boot.results}, a list containing the following objects:
 \itemize{
-\item{\code{B.use}:} {The number of bootstrap resamples used.}
-\item{\code{B.discard}:} {The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
-\item{\code{OR.model.BCa}:} {A numeric matrix similar to \code{OR.obs} but where column 1 corresponds to the model-predicted odds ratios and columns 2 and 3 correspond to the estimated lower and upper confidence bounds, respectively, of the BCa intervals.}
+\item{\code{B.use}: The number of bootstrap resamples used.}
+\item{\code{B.discard}: The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
+\item{\code{OR.model.BCa}: A numeric matrix similar to \code{OR.obs} but where column 1 corresponds to the model-predicted odds ratios and columns 2 and 3 correspond to the estimated lower and upper confidence bounds, respectively, of the BCa intervals.}
 }
 }
 \references{

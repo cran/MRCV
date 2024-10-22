@@ -13,19 +13,19 @@ The data frame contains the following 6 columns:
 
 Column 1, labeled \code{Ed}, corresponds to the respondent's highest attained level of education.  A total of r = 5 levels of education are represented in the data.
 \itemize{
-\item{\code{1}:} {High school}
-\item{\code{2}:} {Vocational school}
-\item{\code{3}:} {2-Year college}
-\item{\code{4}:} {4-Year college}
-\item{\code{5}:} {Other}
+\item{\code{1}: High school}
+\item{\code{2}: Vocational school}
+\item{\code{3}: 2-Year college}
+\item{\code{4}: 4-Year college}
+\item{\code{5}: Other}
 }
 Columns 2-6 correspond to the response categories for the question "What are your primary sources of veterinary information?"  Binary responses (1 = Yes, 0 = No) are provided for each category.
 \itemize{
-\item{\code{Y1}:} {Professional consultant}
-\item{\code{Y2}:} {Veterinarian}
-\item{\code{Y3}:} {State or local extension service}
-\item{\code{Y4}:} {Magazines}
-\item{\code{Y5}:} {Feed companies and representatives}
+\item{\code{Y1}: Professional consultant}
+\item{\code{Y2}: Veterinarian}
+\item{\code{Y3}: State or local extension service}
+\item{\code{Y4}: Magazines}
+\item{\code{Y5}: Feed companies and representatives}
 }
 }
 \source{

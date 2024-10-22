@@ -154,40 +154,46 @@ genloglin.fit<-function(data, model, nvars, limit.output = FALSE, model.vars = N
       setTxtProgressBar(MRCV_globals$pb, MRCV_globals$pb.counter)
     }
   }
-  options(warn = -1)
+  ##################
+  # Replaced with suppressWarnings() whenever glm() is used
+  #   Need because of adjustments when 0 count occurs (replaced with 0.5)
+  # options(warn = -1)
   if (model == "spmi") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y, 
-                 data = model.data, family = poisson(link = log))
+    mod.fit<-suppressWarnings(glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y,
+                 data = model.data, family = poisson(link = log)))
   }
   if (model == "homogeneous") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj, 
-                 data = model.data, family = poisson(link = log)) 
+    mod.fit<-suppressWarnings(glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj,
+                 data = model.data, family = poisson(link = log)))
   }
   if (model == "w.main") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
-                 + wi:yj%in%W, data = model.data, family = poisson(link = log)) 
+    mod.fit<-suppressWarnings(glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj
+                 + wi:yj%in%W, data = model.data, family = poisson(link = log)))
   }
   if (model == "y.main") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
-                 + wi:yj%in%Y, data = model.data, family = poisson(link = log)) 
+    mod.fit<-suppressWarnings(glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj
+                 + wi:yj%in%Y, data = model.data, family = poisson(link = log)))
   }
   if (model == "wy.main") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
+    mod.fit<-suppressWarnings(glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj
                  + wi:yj%in%W + wi:yj%in%Y, data = model.data, 
-                 family = poisson(link = log)) 
+                 family = poisson(link = log)))
   }
   if (model == "saturated") {
-    mod.fit<-glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj 
+    mod.fit<-suppressWarnings(glm(formula = count ~ -1 + W:Y + wi%in%W:Y + yj%in%W:Y + wi:yj
                  + wi:yj%in%W + wi:yj%in%Y + wi:yj%in%W:Y, 
-                 data = model.data, family = poisson(link = log))  
+                 data = model.data, family = poisson(link = log)))
   }  
-  if (class(model)=="formula") {
-    mod.fit<-glm(formula = model, data = model.data, family = poisson(link = log))
+  
+  # if (class(model)=="formula")
+  if (inherits(model, "formula")) {
+    mod.fit<-suppressWarnings(glm(formula = model, data = model.data, family = poisson(link = log)))
     formula.char<-Reduce(paste, deparse(model, width.cutoff=499L))
     mod.fit$call<-paste("glm(formula =", formula.char, ", family = poisson(link = log), data = model.data)", 
                         collapse = " ")
   }
-  options(warn = 0)
+  ###################
+  # options(warn = 0)
   output<-mod.fit 
   if (limit.output) {
     output<-c(mod.fit$fitted.values, mod.fit$deviance)
@@ -542,9 +548,13 @@ genloglin<-function(data, I, J, K = NULL, model, add.constant = .5, boot = TRUE,
   op<-options()
   on.exit(options(op))
   options(warn=1)
-  if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  # if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  #   stop("The \"data\" argument requires an object of class \"data.frame\".")
+  #}
+  if(!(is.data.frame(data) || is.matrix(data))) {
     stop("The \"data\" argument requires an object of class \"data.frame\".")
   }
+
   data<-as.data.frame(data)
   if ((I==0)|(J==0)) {
     stop("\"I\" and \"J\" must be greater than 0.")
@@ -570,13 +580,16 @@ genloglin<-function(data, I, J, K = NULL, model, add.constant = .5, boot = TRUE,
     }
   }
   if (!is.null(K)) {
-    if (class(model)!="formula") {
+  # if (class(model)!="formula") { 
+  if(!inherits(model, "formula")){
       stop("For the 3 MRCV case, only user-supplied formulas are accepted by the \"model\" argument.")
     }
   }
-  if ((class(model)!="formula")&(model!="spmi")&(model!="homogeneous")&(model!="w.main")&(model!="y.main")&(model!="wy.main")&(model!="saturated")) {
+  # if ((class(model)!="formula")&(model!="spmi")&(model!="homogeneous")&(model!="w.main")&(model!="y.main")&(model!="wy.main")&(model!="saturated")) {
+  if (!inherits(model, "formula") & (model!="spmi") & (model!="homogeneous") & (model!="w.main")&(model!="y.main")&(model!="wy.main")&(model!="saturated")) {
     stop("The \"model\" argument requires a formula or one of 6 recognized character strings. \n  See help(genloglin) for details.")    
   }
+  
   if (!is.numeric(B)|!is.numeric(B.max)) {
     warning("\"B\" and \"B.max\" must be numeric. \n  The input values have been changed to the default value of 1999.")
     B<-1999
@@ -604,14 +617,26 @@ genloglin<-function(data, I, J, K = NULL, model, add.constant = .5, boot = TRUE,
     warning("The \"add.constant\" argument cannot be negative. \n  The input value has been changed to the default value of .5.")
     add.constant<-.5
   }
-  if ((class(boot)!="logical")&(boot!=1)&(boot!=0)) {
+  
+  # if ((class(boot)!="logical")&(boot!=1)&(boot!=0)) {
+  #  warning("The \"boot\" argument requires an object of class \"logical\". \n  The input value has been changed to the default value of TRUE.")
+  #  boot<-TRUE
+  #}
+  if (!is.logical(boot) & (boot!=1) & (boot!=0)) {
     warning("The \"boot\" argument requires an object of class \"logical\". \n  The input value has been changed to the default value of TRUE.")
     boot<-TRUE
   }
-  if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+
+  # if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  #  warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
+  #  print.status<-TRUE
+  #}
+  if (!is.logical(print.status) & (print.status!=1) & (print.status!=0)) {
     warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
     print.status<-TRUE
   }
+
+  
   boot<-as.logical(boot)
   print.status<-as.logical(print.status)
   MRCV_globals$B<-B
@@ -635,7 +660,8 @@ genloglin<-function(data, I, J, K = NULL, model, add.constant = .5, boot = TRUE,
                                           -model.data.unsorted$zk),]
   }
   #Add additional variables specified in model formula
-  if (class(model)=="formula") {
+  # if (class(model)=="formula") {
+  if (inherits(model, "formula")) {
     for (i in 1:I) {
       parm<-paste("W", i, sep = "")
       if (length(agrep(parm, model, max.distance=0)) > 0) {
@@ -873,7 +899,8 @@ genloglin<-function(data, I, J, K = NULL, model, add.constant = .5, boot = TRUE,
     B.use<-ncol(model.data.star)-2*nvars
     MRCV_globals$B.use<-B.use
     #Add additional variables specified in model formula
-    if (class(model)=="formula") {
+    # if (class(model)=="formula") {
+    if (inherits(model, "formula")) {
       for (i in 1:I) {
         parm<-paste("W", i, sep = "")
         if (length(agrep(parm, model, max.distance=0)) > 0) {
@@ -1100,11 +1127,13 @@ print.anova.genloglin<-function(x, ...) {
   options(scipen=10)
   type<-names(x)
   model<-x$original.arg$model
-  if (class(model)=="formula") {
+  # if (class(model)=="formula") {
+  if (inherits(model, "formula")) {
     model<-Reduce(paste, deparse(model, width.cutoff=499L))
   }
   model.HA<-x$original.arg$model.HA
-  if (class(model.HA)=="formula") {
+  # if (class(model.HA)=="formula") {
+  if (inherits(model.HA, "formula")) {
     model.HA<-Reduce(paste, deparse(model.HA, width.cutoff=499L))
   }
   gof<-x$original.arg$gof
@@ -1230,14 +1259,28 @@ anova.genloglin<-function(object, model.HA="saturated", type = "all", gof = TRUE
   op<-options()
   on.exit(options(op))
   options(warn=1)
-  if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  # if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  #  warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
+  #  print.status<-TRUE
+  #}
+  if (!is.logical(print.status) & (print.status!=1) & (print.status!=0)) {
     warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
     print.status<-TRUE
   }
-  if ((class(gof)!="logical")&(gof!=1)&(gof!=0)) {
+  
+  
+  
+  # if ((class(gof)!="logical")&(gof!=1)&(gof!=0)) {
+  #  warning("The \"gof\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
+  #  gof<-TRUE
+  #  }
+  if (!is.logical(gof) & (gof!=1) & (gof!=0)) {
     warning("The \"gof\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
     gof<-TRUE
   }
+  
+  
+  
   print.status<-as.logical(print.status)
   gof<-as.logical(gof)
   if (length(type)>1) {
@@ -1261,13 +1304,15 @@ anova.genloglin<-function(object, model.HA="saturated", type = "all", gof = TRUE
   J<-object$original.arg$J
   K<-object$original.arg$K
   if (!is.null(K)) {
-    if ((class(model.HA)!="formula")&(model.HA!="saturated")) {
-      warning("For the 3 MRCV case, only \"saturated\" or user-supplied formulas are accepted by the \"model.HA\" argument. \n  The input value has been changed to the default value of \"saturated\".")
+  # if ((class(model.HA)!="formula")&(model.HA!="saturated")) {
+  if (!inherits(model.HA, "formula") & (model.HA!="saturated")) {
+            warning("For the 3 MRCV case, only \"saturated\" or user-supplied formulas are accepted by the \"model.HA\" argument. \n  The input value has been changed to the default value of \"saturated\".")
       model.HA<-"saturated"
     }
   }
-  if ((class(model.HA)!="formula")&(model.HA!="homogeneous")&(model.HA!="w.main")&(model.HA!="y.main")&(model.HA!="wy.main")&(model.HA!="saturated")) {
-    warning("The \"model.HA\" argument requires a formula or one of 5 recognized character strings. \n  See help(anova.genloglin) for details. \n  The input value has been changed to the default value of \"saturated\".")    
+  # if ((class(model.HA)!="formula")&(model.HA!="homogeneous")&(model.HA!="w.main")&(model.HA!="y.main")&(model.HA!="wy.main")&(model.HA!="saturated")) {
+  if (!inherits(model.HA, "formula") & (model.HA!="homogeneous") & (model.HA!="w.main")&(model.HA!="y.main")&(model.HA!="wy.main")&(model.HA!="saturated")) {
+      warning("The \"model.HA\" argument requires a formula or one of 5 recognized character strings. \n  See help(anova.genloglin) for details. \n  The input value has been changed to the default value of \"saturated\".")    
     model.HA<-"saturated"
   }
   model<-object$original.arg$model
@@ -1284,7 +1329,8 @@ anova.genloglin<-function(object, model.HA="saturated", type = "all", gof = TRUE
   lrt.gof.obs<-lrt.obs
   #If alternative model is not saturated model then need to estimate model
   if (model.HA!="saturated") {    
-    if (class(model.HA)=="formula") {
+    # if (class(model.HA)=="formula") {
+    if (inherits(model.HA, "formula")) {
       for (i in 1:I) {
         parm<-paste("W", i, sep = "")
         if (length(agrep(parm, model.HA, max.distance=0)) > 0) {
@@ -1369,7 +1415,8 @@ anova.genloglin<-function(object, model.HA="saturated", type = "all", gof = TRUE
     lrt.gof.star<-lrt.star
     #If alternative model is not saturated then need to estimate t*'s for HA
     if (model.HA!="saturated") {
-      if (class(model.HA)=="formula") {
+      # if (class(model.HA)=="formula") {
+      if (inherits(model.HA, "formula")) {
         for (i in 1:I) {
           parm<-paste("W", i, sep = "")
           if (length(agrep(parm, model.HA, max.distance=0)) > 0) {
@@ -1584,10 +1631,18 @@ predict.genloglin<-function(object, alpha = .05, pair = "WY", print.status = TRU
     warning("The \"pair\" argument can only take on values of \"WY\", \"WZ\", and \"YZ\". \n  The input value has been changed to the default value of \"WY\".")
     pair<-"WY"
   }
-  if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  
+  # if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  #  warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
+  #  print.status<-TRUE
+  #}
+  if (!is.logical(print.status) & (print.status!=1) & (print.status!=0)) {
     warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
     print.status<-TRUE
   }
+  
+  
+  
   print.status<-as.logical(print.status)
   boot<-object$original.arg$boot
   data<-object$original.arg$data
@@ -1820,8 +1875,9 @@ predict.genloglin<-function(object, alpha = .05, pair = "WY", print.status = TRU
       model.data.unsorted.n_1<-as.data.frame(do.call(rbind, model.data.unsorted.n_1))
       model.data.unsorted.n_1<-data.frame(model.data.unsorted.n_1, index = rep(c(1:n),
                                each=((2^nvars)*nrows)))      
-      if (class(model)=="formula") {
-        for (i in 1:I) {
+      # if (class(model)=="formula") {
+       if (inherits(model, "formula")) {
+         for (i in 1:I) {
           parm<-paste("W", i, sep = "")
           if (length(agrep(parm, model, max.distance=0)) > 0) {
             model.data.unsorted.n_1<-data.frame(model.data.unsorted.n_1, 

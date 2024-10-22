@@ -27,7 +27,7 @@ A logical value indicating whether the results should be presented as a data fra
 }
 }
 \value{
-For \code{create.dataframe = FALSE}, \code{item.response.table} uses the \code{\link{tabular}} function (package \pkg{tables}) to produce tables of marginal counts.
+For \code{create.dataframe = FALSE}, \code{item.response.table} uses the \code{\link[tables:tabular]{tables:tabular()}} function to produce tables of marginal counts.
 
 For \code{create.dataframe = TRUE}, \code{item.response.table} returns the same information as above but presents it as a data frame.  For the one MRCV case, the data frame contains rx2J rows and 4 columns generically named \code{W}, \code{Y}, \code{yj}, and \code{count}.  For the two MRCV case, the data frame contains 2Ix2J rows and 5 columns named \code{W}, \code{Y}, \code{wi}, \code{yj}, and \code{count}.  For the three MRCV case, the data frame contains 2Ix2Jx2K rows and 7 columns named \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, \code{zk}, and \code{count}.
 }

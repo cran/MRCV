@@ -24,7 +24,7 @@ The number of items corresponding to strata variable Z.
 }
 }
 \value{
-The \code{marginal.table} function uses the \code{\link{tabular}} function (package \pkg{tables}) to produce a table containing positive counts.
+The \code{marginal.table} function uses the \code{\link[tables:tabular]{tables:tabular()}} function to produce a table containing positive counts.
 }
 \seealso{
 The \code{\link{item.response.table}} function for creating an item response table or data frame that summarizes both the positive and negative responses for each (Wi, Yj) pair (conditional on the response for each Zk in the case of three MRCVs).

@@ -40,65 +40,65 @@ The bootstrap approach empirically estimates the sampling distribution of the mo
 
 \code{original.arg} is a list containing the following objects:
 \itemize{
-\item{\code{model}:} {The original model specified in the call to the \code{\link{genloglin}} function.}
-\item{\code{model.HA}:} {The alternative model specified for the \code{model.HA} argument.}
-\item{\code{gof}:} {The original value supplied to the \code{gof} argument.}
+\item{\code{model}: The original model specified in the call to the \code{\link{genloglin}} function.}
+\item{\code{model.HA}: The alternative model specified for the \code{model.HA} argument.}
+\item{\code{gof}: The original value supplied to the \code{gof} argument.}
 }
 
 \code{test.statistics} is a list containing at least the following objects:
 \itemize{
-\item{\code{Pearson.chisq}:} {The Pearson model comparison statistic calculated using the observed data.}
-\item{\code{lrt}:} {The LRT model comparison statistic calculated using the observed data.}
+\item{\code{Pearson.chisq}: The Pearson model comparison statistic calculated using the observed data.}
+\item{\code{lrt}: The LRT model comparison statistic calculated using the observed data.}
 }
 If \code{gof = TRUE}, \code{test.statistics} additionally contains
 \itemize{
-\item{\code{Pearson.chisq.gof}:} {The Pearson goodness-of-fit statistic calculated using the observed data.}
-\item{\code{lrt.gof}:} {The LRT goodness-of-fit statistic calculated using the observed data.}
+\item{\code{Pearson.chisq.gof}: The Pearson goodness-of-fit statistic calculated using the observed data.}
+\item{\code{lrt.gof}: The LRT goodness-of-fit statistic calculated using the observed data.}
 }
 
 --- For \code{type = "boot"}, the primary list additionally includes \code{boot.results}, a list containing at least the following objects:
 \itemize{
-\item{\code{B.use}:} {The number of bootstrap resamples used.}
-\item{\code{B.discard}:} {The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
-\item{\code{p.chisq.boot}:} {The bootstrap p-value for the Pearson model comparison test.}
-\item{\code{p.lrt.boot}:} {The bootstrap p-value for the LRT model comparison test.}
+\item{\code{B.use}: The number of bootstrap resamples used.}
+\item{\code{B.discard}: The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
+\item{\code{p.chisq.boot}: The bootstrap p-value for the Pearson model comparison test.}
+\item{\code{p.lrt.boot}: The bootstrap p-value for the LRT model comparison test.}
 }
 If \code{gof = TRUE}, \code{boot.results} additionally contains
 \itemize{
-\item{\code{p.chisq.gof.boot}:} {The bootstrap p-value for the Pearson goodness-of-fit test.}
-\item{\code{p.lrt.gof.boot}:} {The bootstrap p-value for the LRT goodness-of-fit test.}
+\item{\code{p.chisq.gof.boot}: The bootstrap p-value for the Pearson goodness-of-fit test.}
+\item{\code{p.lrt.gof.boot}: The bootstrap p-value for the LRT goodness-of-fit test.}
 }
 
 --- For \code{type = "rs2"}, the primary list additionally includes \code{rs.results}, a list that includes at least \code{Pearson.chisq.rs} and \code{lrt.rs}.
 
 \code{Pearson.chisq.rs} is a list containing the following objects:
 \itemize{
-\item{\code{Pearson.chisq.rs}:} {The Rao-Scott second-order adjusted Pearson model comparison statistic.}
-\item{\code{df}:} {The Rao-Scott second-order adjusted degrees of freedom for the model comparison statistic.}
-\item{\code{p.value}:} {The p-value for the Rao-Scott second-order adjusted Pearson model comparison test.}
+\item{\code{Pearson.chisq.rs}: The Rao-Scott second-order adjusted Pearson model comparison statistic.}
+\item{\code{df}: The Rao-Scott second-order adjusted degrees of freedom for the model comparison statistic.}
+\item{\code{p.value}: The p-value for the Rao-Scott second-order adjusted Pearson model comparison test.}
 }
 
 \code{lrt.rs} is a list containing the following objects:
 \itemize{
-\item{\code{lrt.rs}:} {The Rao-Scott second-order adjusted LRT model comparison statistic.}
-\item{\code{df}:} {Same as \code{df} given above.}
-\item{\code{p.value}:} {The p-value for the Rao-Scott second-order adjusted LRT model comparison test.}
+\item{\code{lrt.rs}: The Rao-Scott second-order adjusted LRT model comparison statistic.}
+\item{\code{df}: Same as \code{df} given above.}
+\item{\code{p.value}: The p-value for the Rao-Scott second-order adjusted LRT model comparison test.}
 }
 
 If \code{gof = TRUE}, \code{rs.results} additionally includes \code{Pearson.chisq.gof.rs} and \code{lrt.gof.rs}.
 
 \code{Pearson.chisq.gof.rs} is a list containing the following objects:
 \itemize{
-\item{\code{Pearson.chisq.gof.rs}:} {The Rao-Scott second-order adjusted Pearson goodness-of-fit statistic.}
-\item{\code{df}:} {Same as \code{df} given above.}
-\item{\code{p.value}:} {The p-value for the Rao-Scott second-order adjusted Pearson goodness-of-fit test.}
+\item{\code{Pearson.chisq.gof.rs}: The Rao-Scott second-order adjusted Pearson goodness-of-fit statistic.}
+\item{\code{df}: Same as \code{df} given above.}
+\item{\code{p.value}: The p-value for the Rao-Scott second-order adjusted Pearson goodness-of-fit test.}
 }
 
 \code{lrt.gof.rs} is a list containing the following objects:
 \itemize{
-\item{\code{lrt.gof.rs}:} {The Rao-Scott second-order adjusted LRT goodness-of-fit statistic.}
-\item{\code{df}:} {Same as \code{df} given above.}
-\item{\code{p.value}:} {The p-value for the Rao-Scott second-order adjusted LRT goodness-of-fit test.}
+\item{\code{lrt.gof.rs}: The Rao-Scott second-order adjusted LRT goodness-of-fit statistic.}
+\item{\code{df}: Same as \code{df} given above.}
+\item{\code{p.value}: The p-value for the Rao-Scott second-order adjusted LRT goodness-of-fit test.}
 }
 
 --- For \code{type = "all"}, the original list includes the \code{boot.results} and \code{rs.results} output.

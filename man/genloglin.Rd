@@ -52,14 +52,14 @@ The \code{boot} argument must equal \code{TRUE} in order to obtain bootstrap res
 
 \code{original.arg} is a list containing the following objects:
 \itemize{
-\item{\code{data}:} {The original data frame supplied to the \code{data} argument.}
-\item{\code{I}:} {The original value supplied to the \code{I} argument.}
-\item{\code{J}:} {The original value supplied to the \code{J} argument.}
-\item{\code{K}:} {The original value supplied to the \code{K} argument.}
-\item{\code{nvars}:} {The number of MRCVs.}
-\item{\code{model}:} {The original value supplied to the \code{model} argument.}
-\item{\code{add.constant}:} {The original value supplied to the \code{add.constant} argument.}
-\item{\code{boot}:} {The original value supplied to the \code{boot} argument.}
+\item{\code{data}: The original data frame supplied to the \code{data} argument.}
+\item{\code{I}: The original value supplied to the \code{I} argument.}
+\item{\code{J}: The original value supplied to the \code{J} argument.}
+\item{\code{K}: The original value supplied to the \code{K} argument.}
+\item{\code{nvars}: The number of MRCVs.}
+\item{\code{model}: The original value supplied to the \code{model} argument.}
+\item{\code{add.constant}: The original value supplied to the \code{add.constant} argument.}
+\item{\code{boot}: The original value supplied to the \code{boot} argument.}
 }
 
 \code{mod.fit} is a list containing the same objects returned by \code{\link{glm}} with a few modifications as described in \code{\link{summary.genloglin}}.
@@ -68,20 +68,20 @@ The \code{boot} argument must equal \code{TRUE} in order to obtain bootstrap res
 
 \code{rs.results} is a list containing the following objects (see Appendix A of Bilder and Loughin, 2007, for more detail):
 \itemize{
-\item{\code{cov.mu}:} {The covariance matrix for the estimated cell counts.}
-\item{\code{E}:} {The covariance matrix for the residuals.}
-\item{\code{gamma}:} {Eigenvalues used in computing second-order Rao-Scott adjusted statistics.}
+\item{\code{cov.mu}: The covariance matrix for the estimated cell counts.}
+\item{\code{E}: The covariance matrix for the residuals.}
+\item{\code{gamma}: Eigenvalues used in computing second-order Rao-Scott adjusted statistics.}
 }
 
 --- For \code{boot = TRUE}, the primary list additionally includes \code{boot.results}, a list containing the following objects:
 \itemize{
-\item{\code{B.use}:} {The number of bootstrap resamples used.}
-\item{\code{B.discard}:} {The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
-\item{\code{model.data.star}:} {For the two MRCV case, a numeric matrix containing 2Ix2J rows and \code{B.use}+4 columns, where the first 4 columns correspond to the model variables \code{W}, \code{Y}, \code{wi}, and \code{yj}, and the last \code{B.use} columns correspond to the observed counts for each resample.  For the three MRCV case, a numeric matrix containing 2Ix2Jx2K rows and \code{B.use+6} columns, where the first 6 columns correspond to the model variables \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, and \code{zk}, and the last \code{B.use} columns correspond to the observed counts for each resample.}
-\item{\code{mod.fit.star}:} {For the two MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2J +1 columns, where the first 2Ix2J columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.  For the three MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2Jx2K+1 columns, where the first 2Ix2Jx2K columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.}
-\item{\code{chisq.star}:} {A numeric vector of length \code{B.use} containing the Pearson statistics (comparing \code{model} to the saturated model) calculated for each resample.}
-\item{\code{lrt.star}:} {A numeric vector of length \code{B.use} containing the LRT statistics calculated for each resample.}
-\item{\code{residual.star}:} {A numeric matrix with 2Ix2J rows (or 2Ix2Jx2K rows for the three MRCV case) and \code{B.use} columns containing the residuals calculated for each resample.}
+\item{\code{B.use}: The number of bootstrap resamples used.}
+\item{\code{B.discard}: The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
+\item{\code{model.data.star}: For the two MRCV case, a numeric matrix containing 2Ix2J rows and \code{B.use}+4 columns, where the first 4 columns correspond to the model variables \code{W}, \code{Y}, \code{wi}, and \code{yj}, and the last \code{B.use} columns correspond to the observed counts for each resample.  For the three MRCV case, a numeric matrix containing 2Ix2Jx2K rows and \code{B.use+6} columns, where the first 6 columns correspond to the model variables \code{W}, \code{Y}, \code{Z}, \code{wi}, \code{yj}, and \code{zk}, and the last \code{B.use} columns correspond to the observed counts for each resample.}
+\item{\code{mod.fit.star}: For the two MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2J +1 columns, where the first 2Ix2J columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.  For the three MRCV case, a numeric matrix containing \code{B.use} rows and 2Ix2Jx2K+1 columns, where the first 2Ix2Jx2K columns correspond to the model-predicted counts for each resample, and the last column corresponds to the residual deviance for each resample.}
+\item{\code{chisq.star}: A numeric vector of length \code{B.use} containing the Pearson statistics (comparing \code{model} to the saturated model) calculated for each resample.}
+\item{\code{lrt.star}: A numeric vector of length \code{B.use} containing the LRT statistics calculated for each resample.}
+\item{\code{residual.star}: A numeric matrix with 2Ix2J rows (or 2Ix2Jx2K rows for the three MRCV case) and \code{B.use} columns containing the residuals calculated for each resample.}
 }
 }
 \references{
@@ -118,14 +118,16 @@ anova(mod.fit, model.HA = count ~ -1 + W:Y + wi\%in\%W:Y + yj\%in\%W:Y + wi:yj +
 # To obtain bootstrap results from the method functions the genloglin() boot 
 # argument must be specified as TRUE (the default)
 # A small B is used for demonstration purposes; normally, a larger B should be used
-\dontrun{
-mod.fit <- genloglin(data = farmer2, I = 3, J = 4, model = "y.main", boot = TRUE, 
+\donttest{
+mod.fit <- genloglin(data = farmer2, I = 3, J = 4, model = "y.main", boot = TRUE,
     B = 99)
 residuals(mod.fit)
 anova(mod.fit, model.HA = "saturated", type = "all")
 predict(mod.fit)
+}
 
 # Estimate a model for 3 MRCVs
+\donttest{
 mod.fit.three <- genloglin(data = farmer3, I = 3, J = 4, K = 5, model = count ~ 
     -1 + W:Y:Z + wi\%in\%W:Y:Z + yj\%in\%W:Y:Z + zk\%in\%W:Y:Z + wi:yj + 
     wi:yj\%in\%Y + wi:yj\%in\%W + wi:yj\%in\%Y:W + yj:zk + yj:zk\%in\%Z + 

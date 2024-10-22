@@ -15,9 +15,13 @@ item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
   op<-options()
   on.exit(options(op))
   options(warn=1)
-  if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  # if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  #   stop("The \"data\" argument requires an object of class \"data.frame\".")
+  # }
+  if(!(is.data.frame(data) || is.matrix(data))) {
     stop("The \"data\" argument requires an object of class \"data.frame\".")
   }
+  
   data<-as.data.frame(data)
   if ((I==0)|(J==0)) {
     stop("\"I\" and \"J\" must be greater than 0.")
@@ -42,10 +46,15 @@ item.response.table<-function(data, I, J, K = NULL, create.dataframe = FALSE) {
       K<-NULL
     }
   }
-  if ((class(create.dataframe)!="logical")&(create.dataframe!=1)&(create.dataframe!=0)) {
+  # if ((class(create.dataframe)!="logical")&(create.dataframe!=1)&(create.dataframe!=0)) {
+  #  warning("The \"create.dataframe\" argument requires a logical value. \n  The input value has been changed to the default value of FALSE.")
+  #  create.dataframe<-FALSE
+  #}
+  if (!is.logical(create.dataframe) & (create.dataframe!=1) & (create.dataframe!=0)) {
     warning("The \"create.dataframe\" argument requires a logical value. \n  The input value has been changed to the default value of FALSE.")
     create.dataframe<-FALSE
   }
+
   create.dataframe<-as.logical(create.dataframe)
   nvars<-1+((I>1)&(J>1))+is.numeric(K)
   if (nvars==1) {
@@ -179,8 +188,11 @@ marginal.table<-function(data, I, J, K = NULL) {
   op<-options()
   on.exit(options(op))
   options(warn=1)
-  if((class(data)!="data.frame")&(class(data)!="matrix")) {
-    stop("The \"data\" argument requires an object of class \"data.frame\".")
+  # if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  #   stop("The \"data\" argument requires an object of class \"data.frame\".")
+  #}
+  if(!(is.data.frame(data) || is.matrix(data))) {
+   stop("The \"data\" argument requires an object of class \"data.frame\".")
   }
   data<-as.data.frame(data)
   if ((I==0)|(J==0)) {
@@ -350,9 +362,11 @@ MMI.stat<-function(data, I, J, summary.data, add.constant) {
         #Add .5 to 0 cell counts
         n.table<-apply(X = n.table, MARGIN = c(1,2), FUN = check.zero, 
                        add.constant = add.constant)
-        options(warn = -1) 
-        X.sq.S.ij[1,i]<-chisq.test(n.table,correct=F)$statistic
-        options(warn = 0) 
+        ####################
+        # options(warn = -1)
+        suppressWarnings(X.sq.S.ij[1,i]<-chisq.test(n.table,correct=F)$statistic)
+        ###################
+        # options(warn = 0)
       }
     }
     colnames(X.sq.S.ij)<-levels(data[,2])
@@ -373,9 +387,11 @@ MMI.stat<-function(data, I, J, summary.data, add.constant) {
         #Add .5 to 0 cell counts
         n.table<-apply(X = n.table, MARGIN = c(1,2), FUN = check.zero, 
                        add.constant = add.constant)
-        options(warn = -1) 
-        X.sq.S.ij[1, i]<-chisq.test(n.table,correct=F)$statistic
-        options(warn = 0) 
+        ####################
+        # options(warn = -1)
+        suppressWarnings(X.sq.S.ij[1, i]<-chisq.test(n.table,correct=F)$statistic)
+        ###################
+        # options(warn = 0)
       }
     }
     colnames(X.sq.S.ij)<-names(data)[mrcv:(mrcv+c-1)]
@@ -417,9 +433,11 @@ SPMI.stat<-function(data, I, J, summary.data, add.constant) {
           #Add .5 to 0 cell counts
           n.table<-apply(X = n.table, MARGIN = c(1,2), FUN = check.zero, 
                          add.constant = add.constant)
-          options(warn = -1) 
-          X.sq.S.ij[i,j]<-chisq.test(n.table,correct=F)$statistic
-          options(warn = 0) 
+          ####################
+          # options(warn = -1)
+          suppressWarnings(X.sq.S.ij[i,j]<-chisq.test(n.table,correct=F)$statistic)
+          ###################
+          # options(warn = 0)
         }
       }
     }
@@ -442,9 +460,11 @@ SPMI.stat<-function(data, I, J, summary.data, add.constant) {
           #Add .5 to 0 cell counts
           n.table<-apply(X = n.table, MARGIN = c(1,2), FUN = check.zero, 
                          add.constant = add.constant)
-          options(warn = -1)
-          X.sq.S.ij[i, j]<-chisq.test(n.table,correct=F)$statistic
-          options(warn = 0) 
+          ##################
+          # options(warn = -1)
+          suppressWarnings(X.sq.S.ij[i, j]<-chisq.test(n.table,correct=F)$statistic)
+          ###################
+          # options(warn = 0)
         }
       }
     }
@@ -1049,7 +1069,10 @@ MI.test<-function(data, I, J, type = "all", B = 1999, B.max = B,
   op<-options()
   on.exit(options(op))
   options(warn=1)
-  if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  #if((class(data)!="data.frame")&(class(data)!="matrix")) {
+  #  stop("The \"data\" argument requires an object of class \"data.frame\".")
+  #}
+  if(!(is.data.frame(data) || is.matrix(data))) {
     stop("The \"data\" argument requires an object of class \"data.frame\".")
   }
   data<-as.data.frame(data)
@@ -1099,17 +1122,35 @@ MI.test<-function(data, I, J, type = "all", B = 1999, B.max = B,
     warning("The \"add.constant\" argument cannot be negative. \n  The input value has been changed to the default value of .5.")
     add.constant<-.5
   }
-  if ((class(summary.data)!="logical")&(summary.data!=1)&(summary.data!=0)) {
+  #if ((class(summary.data)!="logical")&(summary.data!=1)&(summary.data!=0)) {
+  #  stop("The \"summary.data\" argument requires a logical value.")
+  #}
+  if (!is.logical(summary.data) & (summary.data!=1) & (summary.data!=0)) {
     stop("The \"summary.data\" argument requires a logical value.")
   }
-  if ((class(plot.hist)!="logical")&(plot.hist!=1)&(plot.hist!=0)) {
+
+  #if ((class(plot.hist)!="logical")&(plot.hist!=1)&(plot.hist!=0)) {
+  #  warning("The \"plot.hist\" argument requires a logical value. \n  The input value has been changed to the default value of FALSE.")
+  #  plot.hist<-FALSE
+  #}
+  if (!is.logical(plot.hist) & (plot.hist!=1) & (plot.hist!=0)) {
     warning("The \"plot.hist\" argument requires a logical value. \n  The input value has been changed to the default value of FALSE.")
     plot.hist<-FALSE
   }
-  if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  
+  
+  
+  # if ((class(print.status)!="logical")&(print.status!=1)&(print.status!=0)) {
+  #  warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
+  #  print.status<-TRUE
+  #}
+  
+  if (!is.logical(print.status) & (print.status!=1) & (print.status!=0)) {
     warning("The \"print.status\" argument requires a logical value. \n  The input value has been changed to the default value of TRUE.")
     print.status<-TRUE
   }
+  
+  
   summary.data<-as.logical(summary.data)
   plot.hist<-as.logical(plot.hist)
   print.status<-as.logical(print.status)

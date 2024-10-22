@@ -20,7 +20,7 @@ Additional arguments passed to or from other methods.
 \details{
 The bootstrap results are only available when \code{boot = TRUE} in the call to the \code{\link{genloglin}} function.
 
-The \code{residuals.genloglin} function uses \code{\link{tabular}} (package \pkg{tables}) to display the results for the two MRCV case.
+The \code{residuals.genloglin} function uses \code{\link[tables:tabular]{tables:tabular()}} to display the results for the two MRCV case.
 
 See Bilder and Loughin (2007) for additional details about calculating the residuals.
 }
@@ -29,9 +29,9 @@ See Bilder and Loughin (2007) for additional details about calculating the resid
 
 --- For \code{boot = TRUE} in the call to the \code{\link{genloglin}} function, the list additionally includes:
 \itemize{
-\item{\code{B.use}:} {The number of bootstrap resamples used.}
-\item{\code{B.discard}:} {The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
-\item{\code{std.pearson.res.boot.var}:} {For the two MRCV case, a 2Ix2J table of class \code{'tabular'} containing the standardized Pearson residuals based on the bootstrap variance.  For the three MRCV case, a data frame containing the 2Ix2Jx2K residuals.}
+\item{\code{B.use}: The number of bootstrap resamples used.}
+\item{\code{B.discard}: The number of bootstrap resamples discarded due to having at least one item with all positive or negative responses.}
+\item{\code{std.pearson.res.boot.var}: For the two MRCV case, a 2Ix2J table of class \code{'tabular'} containing the standardized Pearson residuals based on the bootstrap variance.  For the three MRCV case, a data frame containing the 2Ix2Jx2K residuals.}
 }
 }
 \references{

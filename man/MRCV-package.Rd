@@ -6,14 +6,14 @@
 Methods for Analyzing Multiple Response Categorical Variables
 }
 \description{
-The MRCV package provides functions for analyzing the association between one single response categorical variable (SRCV) and one multiple response categorical variable (MRCV), or between two or three MRCVs.  A modified Pearson chi-square statistic can be used to test for marginal independence for the one or two MRCV case, or a more general loglinear modeling approach can be used to examine various other structures of association for the two or three MRCV case.  Bootstrap- and asymptotic-based standardized residuals and model-predicted odds ratios are available, in addition to other descriptive information.
+Provides functions for analyzing the association between one single response categorical variable (SRCV) and one multiple response categorical variable (MRCV), or between two or three MRCVs.  A modified Pearson chi-square statistic can be used to test for marginal independence for the one or two MRCV case, or a more general loglinear modeling approach can be used to examine various other structures of association for the two or three MRCV case.  Bootstrap- and asymptotic-based standardized residuals and model-predicted odds ratios are available, in addition to other descriptive information.
 }
 \details{
 \tabular{ll}{
 Package: \tab MRCV\cr
-Version: \tab 0.3-3\cr
-Date: \tab 2014-09-03\cr
-Depends: \tab R (>= 3.1.1)\cr
+Version: \tab 0.4-0\cr
+Date: \tab 2024-10-18\cr
+Depends: \tab R (>= 4.4.0)\cr
 Imports: \tab tables\cr
 Suggests: \tab geepack\cr
 LazyData: \tab TRUE\cr
@@ -41,7 +41,7 @@ Rao-Scott adjustments may not be feasible when the total number of MRCV items is
 \author{
 Natalie Koziol, Chris Bilder
 
-Maintainer: Natalie Koziol <nak371@gmail.com>
+Maintainer: Chris Bilder <bilder@unl.edu>
 }
 \references{
 Agresti, A. and Liu, I.-M. (1999)  Modeling a categorical variable allowing arbitrarily many category choices.  \emph{Biometrics}, \bold{55}, 936--943.
@@ -52,5 +52,9 @@ Bilder, C. and Loughin, T. (2007)  Modeling association between two or more cate
 
 Bilder, C., Loughin, T., and Nettleton, D. (2000)  Multiple marginal independence testing for pick any/c variables.  \emph{Communications in Statistics--Theory and Methods}, \bold{29}, 1285--1316.
 
+Koziol, N. and Bilder, C. (2014)  MRCV: A package for analyzing categorical variables with multiple response options.  \emph{The R Journal}, \bold{6}, 144--150.
+
 Thomas, D. and Decady, Y. (2004)  Testing for association using multiple response survey data: Approximate procedures based on the Rao-Scott approach.  \emph{International Journal of Testing}, \bold{4}, 43--59.
+
+
 }

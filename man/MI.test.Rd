@@ -60,47 +60,47 @@ Agresti and Liu (1999) discuss a marginal logit model approach that uses general
 \value{
 --- \code{MI.test} returns a list containing at least \code{general}, a list containing the following objects:
 \itemize{
-\item{\code{data}:} {The original data frame supplied to the \code{data} argument.}
-\item{\code{I}:} {The original value supplied to the \code{I} argument.}
-\item{\code{J}:} {The original value supplied to the \code{J} argument.}
-\item{\code{summary.data}:} {The original value supplied to the \code{summary.data} argument.}
-\item{\code{X.sq.S}:} {The modified Pearson statistic; NA if at least one of the J (one MRCV case) or IxJ (two MRCV case) contingency tables does not have the correct dimension.}
-\item{\code{X.sq.S.ij}:} {A matrix containing the individual Pearson statistics.}
+\item{\code{data}: The original data frame supplied to the \code{data} argument.}
+\item{\code{I}: The original value supplied to the \code{I} argument.}
+\item{\code{J}: The original value supplied to the \code{J} argument.}
+\item{\code{summary.data}: The original value supplied to the \code{summary.data} argument.}
+\item{\code{X.sq.S}: The modified Pearson statistic; NA if at least one of the J (one MRCV case) or IxJ (two MRCV case) contingency tables does not have the correct dimension.}
+\item{\code{X.sq.S.ij}: A matrix containing the individual Pearson statistics.}
 }
 
 --- For \code{type = "boot"}, the primary list additionally includes \code{boot}, a list containing the following objects:
 \itemize{
-\item{\code{B.use}:} {The number of bootstrap resamples used.}
-\item{\code{B.discard}:} {The number of bootstrap resamples discarded due to having at least one contingency table with incorrect dimension.}
-\item{\code{p.value.boot}:} {The bootstrap p-value for the test of MMI or SPMI.}
-\item{\code{p.combo.min.boot}:} {The bootstrap p-value for the minimum p-value combination method.}
-\item{\code{p.combo.prod.boot}:} {The bootstrap p-value for the product p-value combination method.}
-\item{\code{X.sq.S.star}:} {A numeric vector containing the modified Pearson statistics calculated for each resample.}
-\item{\code{X.sq.S.ij.star}:} {A matrix containing the individual Pearson statistics calculated for each resample.}
-\item{\code{p.combo.min.star}:} {A numeric vector containing the minimum p-value calculated for each resample.}
-\item{\code{p.combo.prod.star}:} {A numeric vector containing the product p-value calculated for each resample.}
+\item{\code{B.use}: The number of bootstrap resamples used.}
+\item{\code{B.discard}: The number of bootstrap resamples discarded due to having at least one contingency table with incorrect dimension.}
+\item{\code{p.value.boot}: The bootstrap p-value for the test of MMI or SPMI.}
+\item{\code{p.combo.min.boot}: The bootstrap p-value for the minimum p-value combination method.}
+\item{\code{p.combo.prod.boot}: The bootstrap p-value for the product p-value combination method.}
+\item{\code{X.sq.S.star}: A numeric vector containing the modified Pearson statistics calculated for each resample.}
+\item{\code{X.sq.S.ij.star}: A matrix containing the individual Pearson statistics calculated for each resample.}
+\item{\code{p.combo.min.star}: A numeric vector containing the minimum p-value calculated for each resample.}
+\item{\code{p.combo.prod.star}: A numeric vector containing the product p-value calculated for each resample.}
 }
 
 --- For \code{type = "rs2"}, the primary list additionally includes \code{rs2}, a list containing the following objects:
 \itemize{
-\item{\code{X.sq.S.rs2}:} {The Rao-Scott second-order adjusted Pearson statistic.}
-\item{\code{df.rs2}:} {The degrees of freedom for testing the second-order Rao-Scott adjusted Pearson statistic.}
-\item{\code{p.value.rs2}:} {The p-value based on the Rao-Scott second-order adjustment.}
+\item{\code{X.sq.S.rs2}: The Rao-Scott second-order adjusted Pearson statistic.}
+\item{\code{df.rs2}: The degrees of freedom for testing the second-order Rao-Scott adjusted Pearson statistic.}
+\item{\code{p.value.rs2}: The p-value based on the Rao-Scott second-order adjustment.}
 }
 
 --- For \code{type = "bon"}, the primary list additionally includes \code{bon}, a list containing the following objects:
 \itemize{
-\item{\code{p.value.bon}:} {The Bonferroni adjusted p-value for the test of MMI or SPMI.}
-\item{\code{X.sq.S.ij.p.bon}:} {A matrix containing the Bonferroni adjusted p-values for the individual Pearson statistics.}
+\item{\code{p.value.bon}: The Bonferroni adjusted p-value for the test of MMI or SPMI.}
+\item{\code{X.sq.S.ij.p.bon}: A matrix containing the Bonferroni adjusted p-values for the individual Pearson statistics.}
 }
 
 --- For \code{type = "all"}, the list includes all of the above objects.
 
 --- \code{MI.stat} returns a list containing the following objects:
 \itemize{
-\item{\code{X.sq.S}:} {Defined above.}
-\item{\code{X.sq.S.ij}:} {Defined above.}
-\item{\code{valid.margins}:} {The number of contingency tables with correct dimension.}
+\item{\code{X.sq.S}: Defined above.}
+\item{\code{X.sq.S.ij}: Defined above.}
+\item{\code{valid.margins}: The number of contingency tables with correct dimension.}
 }
 }
 \references{
@@ -120,10 +120,9 @@ test.mmi.rs2
 
 # Test for MMI using all three approaches
 # A small B is used for demonstration purposes; normally, a larger B should be used
-\dontrun{
-test.mmi.all <- MI.test(data = farmer1, I = 1, J = 5, type = "all", B = 99, 
+test.mmi.all <- MI.test(data = farmer1, I = 1, J = 5, type = "all", B = 99,
     plot.hist = TRUE)
-test.mmi.all}
+test.mmi.all
 
 # Use MI.test() with summary data
 # Convert raw data file to summary file for this example 
@@ -139,7 +138,6 @@ test.spmi.rs2 <- MI.test(data = farmer2, I = 3, J = 4, type = "rs2")
 test.spmi.rs2
 
 # Test for MMI using the marginal logit model approach
-\dontrun{
 library(geepack)
 n<-nrow(farmer1)
 farmer1.id<-cbind(case=1:n, farmer1)
@@ -162,5 +160,5 @@ mod.fit.HA<-geeglm(formula = response ~ Ed*item, family = binomial(link = logit)
                    data = farmer1.gee, na.action = na.omit, id = case, 
                    corstr = "unstructured")
 # Compute Wald test
-anova(mod.fit.HA, mod.fit.H0)}
+anova(mod.fit.HA, mod.fit.H0)
 }

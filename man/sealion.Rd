@@ -15,17 +15,17 @@ Column 1, labeled \code{Date}, corresponds to the date of data collection.  Two 
 
 Columns 2-12 correspond to the types of prey found in Steller sea lion scats.  Binary responses (1 = Present in scat, 0 = Not present in scat) are provided for each category.
 \itemize{
-\item{\code{prey1}:} {Unidentified fish}
-\item{\code{prey2}:} {Pacific lamprey (\emph{Lampetra tridentata})}
-\item{\code{prey3}:} {Starry flounder (\emph{Platichthys stellatus})}
-\item{\code{prey4}:} {Pacific sardine (\emph{Sardinops sagax})}
-\item{\code{prey5}:} {Pacific herring (\emph{Clupea pallasii})}
-\item{\code{prey6}:} {Unidentified clupeid (family Clupeidae)}
-\item{\code{prey7}:} {Unidentified skate (family Rajidae)}
-\item{\code{prey8}:} {Northern anchovy (\emph{Engraulis mordax})}
-\item{\code{prey9}:} {Pacific salmon (\emph{Oncorhynchus} spp.)}
-\item{\code{prey10}:} {Pacific staghorn sculpin (\emph{Leptocottus armatus})}
-\item{\code{prey11}:} {Pacific hake (\emph{Merluccius productus})}
+\item{\code{prey1}: Unidentified fish}
+\item{\code{prey2}: Pacific lamprey (\emph{Lampetra tridentata})}
+\item{\code{prey3}: Starry flounder (\emph{Platichthys stellatus})}
+\item{\code{prey4}: Pacific sardine (\emph{Sardinops sagax})}
+\item{\code{prey5}: Pacific herring (\emph{Clupea pallasii})}
+\item{\code{prey6}: Unidentified clupeid (family Clupeidae)}
+\item{\code{prey7}: Unidentified skate (family Rajidae)}
+\item{\code{prey8}: Northern anchovy (\emph{Engraulis mordax})}
+\item{\code{prey9}: Pacific salmon (\emph{Oncorhynchus} spp.)}
+\item{\code{prey10}: Pacific staghorn sculpin (\emph{Leptocottus armatus})}
+\item{\code{prey11}: Pacific hake (\emph{Merluccius productus})}
 }
 }
 \source{
